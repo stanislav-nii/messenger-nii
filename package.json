@@ -4,7 +4,7 @@
   "version": "3.0.0",
   "main": "release.js",
   "dependencies": {
-    "total.js": "latest"
+    "total.js": "^3.4.13"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -15,5 +15,8 @@
     "slack"
   ],
   "author": "Peter Širka",
-  "license":"MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^26.0.0"
+  }
 }

@@ -1,0 +1,6 @@
+databases/*
+logs/*
+node_modules/*
+tmp/*
+debug.js.json
+package-lock.json

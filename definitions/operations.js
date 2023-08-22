@@ -1,3 +1,4 @@
+const { log } = require('console');
 const Fs = require('fs');
 
 NEWOPERATION('users.save', function(error, value, callback) {

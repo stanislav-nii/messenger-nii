@@ -5,7 +5,6 @@ NEWSCHEMA('Channel').make(function(schema) {
 	schema.define('description', 'String(200)', true);
 
 	schema.setSave(function(error, model, options, callback, controller) {
-
 		if (!controller.user.sa) {
 			error.push('error-user-privileges');
 			return callback();
@@ -15,9 +14,7 @@ NEWSCHEMA('Channel').make(function(schema) {
 
 		tmp.linker = model.name.slug();
 		!tmp.linker && (tmp.linker = U.GUID(10));
-
 		if (tmp.id) {
-
 			var item = F.global.channels.findItem('id', tmp.id);
 			if (!item) {
 				error.push('error-channel-404');
@@ -28,6 +25,10 @@ NEWSCHEMA('Channel').make(function(schema) {
 			item.linker = tmp.linker;
 			item.description = tmp.description;
 		} else {
+			if(F.global.channels.findItem('linker', tmp.linker)){
+				error.push('error-channel-name');
+				return callback();
+			}
 			tmp.datecreated = F.datetime;
 			tmp.id = UID();
 			F.global.channels.push(tmp);

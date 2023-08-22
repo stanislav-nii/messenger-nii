@@ -1405,7 +1405,7 @@ COMPONENT('loading', function() {
 		clearTimeout(pointer);
 		pointer = setTimeout(function() {
 			self.classes('+hidden');
-		}, timeout || 1);
+		}, timeout || 1); 					//timeout || 1
 		return self;
 	};
 });
