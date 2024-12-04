@@ -314,6 +314,7 @@
 		ON('@codemirror', function(component) {
 
 			component.enter = function(type) {
+				
 
 				if ((type && common.enter) || (!type && !common.enter))
 					return CodeMirror.Pass;
@@ -333,6 +334,37 @@
 				MSG_MESSAGE.users = findusers(MSG_MESSAGE.body);
 				MSG_MESSAGE.users && (MSG_MESSAGE.users[user.id] = true);
 
+				
+				EMIT('messenger.send', MSG_MESSAGE);
+
+				if (MSG_MESSAGE.body) {
+					component.set('');
+					SETTER('websocket', 'send', MSG_MESSAGE);
+				}
+
+				SETTER('fontawesome', 'hide');
+				common.search && SET('common.search', '');
+			};
+			
+			component.enterForUpload = function(type) {
+
+				
+				// "chat" is defined in /templates/chat.html
+				if (chat.lastmessage && chat.lastmessage.modified) {
+					MSG_MESSAGE.secret = chat.lastmessage.secret;
+					MSG_MESSAGE.id = chat.lastmessage.id;
+					chat.lastmessage.modified = false;
+				} else {
+					MSG_MESSAGE.id = undefined;
+					MSG_MESSAGE.secret = chat.secret;
+				}
+
+				MSG_MESSAGE.body = component.getValue().trim();
+				MSG_MESSAGE.files = findfiles(MSG_MESSAGE.body);
+				MSG_MESSAGE.users = findusers(MSG_MESSAGE.body);
+				MSG_MESSAGE.users && (MSG_MESSAGE.users[user.id] = true);
+
+				
 				EMIT('messenger.send', MSG_MESSAGE);
 
 				if (MSG_MESSAGE.body) {
@@ -355,6 +387,7 @@
 					chat.lastmessage.modified = false;
 					component.set('');
 				}
+
 			};
 
 			component.typing = function() {
@@ -367,6 +400,7 @@
 					e.preventDefault();
 					e.stopPropagation();
 				}
+				console.log("upload");
 
 				SETTER('loading', 'show');
 
@@ -399,9 +433,19 @@
 							push.push('[' + file.filename + '](' + file.url + ')');
 					}
 
+					
+					
 					editor.replaceSelection(push.join('\n'));
 					SETTER('fontawesome', 'hide');
+					
 					callback && callback();
+					
+
+					//codemirror_thumbsup();
+				
+					component.enterForUpload(component.codemirror(), self.files, function() {
+						  console.log("inside upload");
+			        });
 				});
 			};
 		});
@@ -593,6 +637,7 @@
 		}
 
 		function codemirror_enter() {
+			//console.log("switcher");
 			SET('common.enter', !common.enter);
 		}
 

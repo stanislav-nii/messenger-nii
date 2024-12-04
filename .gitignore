@@ -4,3 +4,4 @@ node_modules/*
 tmp/*
 debug.js.json
 package-lock.json
+release.js.json
