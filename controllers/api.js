@@ -110,12 +110,27 @@ function upload_base64() {
 		case 'image/png':
 			ext = '.png';
 			break;
+		case 'image/jpg':
+			ext = '.jpg';
+			break;
 		case 'image/jpeg':
 			ext = '.jpg';
 			break;
 		case 'image/gif':
 			ext = '.gif';
 			break;
+		case 'image/wepb':
+			ext = '.webp';
+			break;
+		case 'image/svg':
+			ext = '.svg';
+			break;
+		case 'image/bmp':
+			ext = '.bmp';
+			break;
+		case 'image/x-icon':
+			ext = '.ico';
+		break;
 		default:
 			self.json(null);
 			return;
