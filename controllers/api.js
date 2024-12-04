@@ -9,7 +9,7 @@ exports.install = function() {
 		F.route('/logoff/', logoff);
 
 		// Uploads
-		F.route('/api/upload/',         upload,        ['upload', 10000], 3084); // 3 MB
+		F.route('/api/upload/',         upload,        ['upload', 10000], 524288); // 3 MB
 		F.route('/api/upload/photo/',   upload_photo,  ['upload', 10000], 1024); // 1 MB
 		F.route('/api/upload/base64/',  upload_base64, ['post', 10000], 2048); // 2 MB
 
@@ -17,13 +17,16 @@ exports.install = function() {
 		F.route('/api/account/',        json_save,     ['*Account', 'post']);
 
 		// Channels (SA)
+		F.route('/api/channels/{id}/',  json_read,     ['*Channel']);
 		F.route('/api/channels/',       json_save,     ['*Channel', 'post']);
 		F.route('/api/channels/{id}/',  json_remove,   ['*Channel', 'delete']);
 		F.route('/api/blacklist/',      json_blacklist,['post']);
 
 		// Messages
+		//F.route('/api/messages/{id}/',  json_read,     ['*Message']);
 		F.route('/api/messages/{id}/',  json_query,    ['*Message']);
 		F.route('/api/files/{id}/',     json_files,    ['*Message']);
+		F.route('/api/messages/{conversation_id}/{id}/',  json_remove,   ['*Message', 'delete']);
 
 		// Favorites
 		F.route('/api/favorites/',      json_query,    ['*Favorite']);

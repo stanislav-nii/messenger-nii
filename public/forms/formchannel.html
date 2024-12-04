@@ -31,13 +31,11 @@
 
 	ON('#formchannel', function(component) {
 		component.submit = function() {
-			if (BLOCKED('formchannel', 2000) || !jC.valid('formchannel.*')) //2000
+			if (BLOCKED('formchannel', 2000) || !jC.valid('formchannel.*'))
 				return;
 			RESET('formchannel.*');
 			AJAX('POST /api/channels/', formchannel, function() {
-				console.log(formchannel);
 				SETTER('message', 'success', '@(The channel has been created successfully.)');
-				//SETTER('message', 'warning', '@(Channel with this name is already exists.)');
 				SET('common.form', '');
 			});
 		};

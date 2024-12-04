@@ -5,8 +5,8 @@ NEWSCHEMA('User').make(function(schema) {
 	schema.define('email', 'Email', true);
 	schema.define('password', 'String(30)');
 	schema.define('status', 'String(50)');
-	schema.define('position', 'String(30)', true);
-	schema.define('department', 'String(30)', true);
+	schema.define('position', 'String(40)', true);
+	schema.define('department', 'String(100)', true);
 	schema.define('picture', 'String(30)');
 	schema.define('channels', 'Object');
 	schema.define('blocked', Boolean);
@@ -65,10 +65,10 @@ NEWSCHEMA('User').make(function(schema) {
 
 	schema.setGet(function(error, model, options, callback, controller) {
 
-		if (!controller.user.sa) {
-			error.push('error-user-privileges');
-			return callback();
-		}
+		// if (!controller.user.sa) {
+		// 	error.push('error-user-privileges');
+		// 	return callback();
+		// }
 
 		var item = F.global.users.findItem('id', controller.id);
 		!item && error.push('error-user-404');

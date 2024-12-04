@@ -267,25 +267,9 @@
 					tmp.me = true;
 
 					response.channels.forEach(function(item) {
-						item.is = user.channels ? user.channels[item.id] === true : false; //change last true on false
-						if(user.position === 'Administrator'){
-							item.is = true;
-						}
+						item.is = user.channels ? user.channels[item.id] === true : true;
 						item.visible = user.blacklist ? (user.blacklist[item.id] ? false : true) : true;
 					});
-					
-					//--remove channels not available for user--//
-					var i = response.channels.length - 1;
-					if(user.position !== 'Administrator'){
-						while (i >= 0) {
-							if (!response.channels[i].is) {	
-								response.channels.splice(i, 1);
-							}
-
-							i -= 1;
-						}
-					}
-					//------------------------------------------//
 
 					SET('current.channels', response.channels);
 					SET('current.users', response.users);

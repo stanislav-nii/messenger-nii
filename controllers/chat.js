@@ -1,6 +1,7 @@
 const MSG_ONOFF = { type: 'online' };
 const MSG_CDL = { type: 'cdl' };
 const MSG_UNREAD = { type: 'unread' };
+const MSG_READ = {type: 'read'}
 const MSG_TYPING = { type: 'typing' };
 const MSG_MUTE = { type: 'mute' };
 const SKIPFIELDS = { email: true, unread: true, recent: true, channels: true, password: true, ticks: true };
@@ -8,6 +9,8 @@ const SKIPFIELDS = { email: true, unread: true, recent: true, channels: true, pa
 exports.install = function() {
 	F.websocket('/', messages, ['json', 'authorize'], 3);
 };
+
+var read_interval = setInterval(()=>{}, 5000);
 
 function messages() {
 
@@ -98,6 +101,7 @@ function messages() {
 
 			// Changed group (outside of channels and users)
 			case 'nochat':
+				//clearInterval(read_interval);
 				client.threadtype = undefined;
 				client.threadid = undefined;
 				break;
@@ -109,8 +113,15 @@ function messages() {
 				client.user.threadid = client.threadid = message.id;
 				message.type === 'user' && iduser !== message.id && (client.user.recent[message.id] = true);
 				client.user.unread[message.id] && (delete client.user.unread[message.id]);
+				self && self.send(MSG_READ, function(id, m) {
+					//console.log(client.user);
+					console.log("m.user.id: " + m.user.id + "\t" + "client.user.id: " + client.user.id);
+					console.log("m.threadid: " + m.threadid + "\t" + "client.threadid: " + client.threadid);
+					if (m.user.id !== client.user.id && ((m.threadid === client.threadid) || (m.user.id === client.threadid && (m.threadid === client.user.id))) && (!message.users || message.users[m.user.id])) {
+						return true;
+					}
+				});
 				break;
-
 			case 'mute':
 
 				if (!client.threadid)
@@ -148,6 +159,7 @@ function messages() {
 
 			// Real message
 			case 'message':
+				//console.log(message);
 				!client.user.blocked && F.global.sendmessage(client, message);
 				break;
 		}
@@ -155,7 +167,6 @@ function messages() {
 }
 
 F.global.sendmessage = function(client, message) {
-
 	if (!client.threadid || !client.threadtype)
 		return;
 
@@ -169,6 +180,7 @@ F.global.sendmessage = function(client, message) {
 	message.iduser = iduser;
 	message.mobile = client.req ? client.req.mobile : false;
 	message.robot = client.send ? false : true;
+	message.unread = true;
 
 	if (message.secret)
 		message.dateexpired = F.datetime.add('1 day');
@@ -180,7 +192,7 @@ F.global.sendmessage = function(client, message) {
 
 	id && (message.edited = true);
 	client.user.lastmessages[client.threadid] = message.id;
-
+	
 	F.emit('messenger.message', self, client, message);
 	NOSQL('messages').counter.hit('all').hit(iduser);
 
@@ -188,16 +200,20 @@ F.global.sendmessage = function(client, message) {
 
 	if (client.threadtype === 'user') {
 
+		count = 0;
+
 		is = true;
 
 		// Users can be logged from multiple devices
 		self && self.send(message, function(id, n) {
+
 
 			if (n === client)
 				return false;
 
 			// Target user
 			if (n.threadid === iduser && n.user.id === client.threadid) {
+				++count
 				is = false;
 				n.user.lastmessages[n.threadid] = message.id;
 				return true;
@@ -212,6 +228,10 @@ F.global.sendmessage = function(client, message) {
 			// !client.send (the messages is from "robot")
 			return n.user.id === iduser && n.threadid === client.threadid;
 		});
+
+		if(count > 0) {
+			message.unread = false;
+		}
 
 		if (is) {
 			tmp = F.global.users.findItem('id', client.threadid);
@@ -245,8 +265,17 @@ F.global.sendmessage = function(client, message) {
 		tmp = {};
 		idchannel = client.threadid;
 
+		
+		var count = 0;
+		self && self.send(message, function (id, m){
+			if (m.threadid === client.threadid && (!message.users || message.users[m.user.id])) {
+				++count;
+			}
+		});
+
 		// Notify users in this channel
 		self && self.send(message, function(id, m) {
+			count < 2 ? message.unread = true: message.unread = false;
 			if (m.threadid === client.threadid && (!message.users || message.users[m.user.id])) {
 				tmp[m.user.id] = true;
 				m.user.lastmessages[m.threadid] = message.id;

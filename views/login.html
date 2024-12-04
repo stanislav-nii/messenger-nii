@@ -10,11 +10,12 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 	<meta name="robots" content="all,follow" />
 	@{head}
-	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
-	<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Sans+Pro:400,200,700&subset=latin,latin-ext" />
+	<link rel="stylesheet" href="js/index/font-awesome.min.css" />
+	<link rel="stylesheet" href="css/source-sans-pro.css" />
 	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.20.2/codemirror.min.js"></script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/marked/0.3.6/marked.min.js"></script>
+	<script src="/public/js/"></script>
 	@{import('default.css', 'default.js', 'favicon.ico')}
 </head>
 <body>
@@ -29,12 +30,13 @@
 	<br />
 	<div class="container">
 		<div class="col-md-4 col-md-offset-4 enter">
-			<div data-jc="textbox" data-jc-path="user.email" class="m" data-maxlength="120" data-required="true" data-placeholder="@(Enter your email address)" data-autofocus="true" data-jc-type="email">@(E-mail address)</div>
+			<div data-jc="textbox" data-jc-path="user.name" data-required="true" data-maxlength="40" data-placeholder="@(e.g. Peter Sirka)">@(User name)</div>
 			<div data-jc="textbox" data-jc-path="user.password" data-jc-type="password" data-required="true" class="m" data-maxlength="30" data-placeholder="@(Enter your password)">@(Password)</div>
 			<div data-jc="error" data-jc-path="user.response"></div>
-			<div data-jc="validation" data-jc-path="user">
-				<button class="button button-small b" data-jc="click" data-jc-path="doLogin" data-enter=".enter"><span class="fa fa-lock"></span> @(Sign in)</button>
-			</div>
+			<button class="button button-small b" data-jc="click" data-jc-path="doLogin" data-enter=".enter"><span class="fa fa-lock"></span> @(Sign in)</button>
+			<!-- <div data-jc="validation" data-jc-path="user">
+				
+			</div> -->
 		</div>
 	</div>
 

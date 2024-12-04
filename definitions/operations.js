@@ -155,12 +155,12 @@ NEWOPERATION('send', function(error, value, callback) {
 	value.users && value.users.indexOf(SEND_CLIENT.user.id) === -1 && value.users.push(SEND_CLIENT.user.id);
 
 	SEND_MESSAGE.id = value.id;
-	SEND_MESSAGE.body = value.body;
+	//SEND_MESSAGE.body = value.body;
+	SEND_MESSAGE.body = "Hyirka";
 	SEND_MESSAGE.users = value.users || null;
 	SEND_MESSAGE.files = value.files || null;
 	SEND_MESSAGE.idto = value.idto;
 	SEND_MESSAGE.secret = value.secret;
-
 	F.global.sendmessage(SEND_CLIENT, SEND_MESSAGE);
 	callback(SUCCESS(true));
 });
