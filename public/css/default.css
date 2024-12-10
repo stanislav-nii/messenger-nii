@@ -228,7 +228,7 @@ h3 { font: normal bold 18px $font; margin: 0 0 20px; padding: 0; color: black; }
 .markdown .h3 { margin: 0 0 5px; font-size: 16px; padding: 0 0 5px; color: black; }
 .markdown p code, .markdown li code, .markdown blockquote code, .markdown h1 code, .markdown h2 code, .markdown h3 code, .markdown h4 code { background-color: #E0E0E0; padding: 0 5px 1px; border-radius: 4px; font-size: 14px; font-family: Menlo, Monaco, monospace; }
 /* .markdown p { margin: 0 0 20px; text-align: left;} */
-.markdown p { margin: 0; text-align: left;}
+.markdown p { margin: 0; text-align: left; overflow-wrap: anywhere;}
 .markdown pre { padding: 0; border-radius: 4px; margin: 20px 0; width: 100%; }
 .markdown pre code { padding: 15px; font-size: 14px; line-height: 18px; font-family: Menlo, Monaco, monospace; }
 .markdown ul { margin: 0 0 20px 0; padding: 0 0 0 2em; }

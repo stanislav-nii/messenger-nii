@@ -156,7 +156,6 @@ NEWOPERATION('send', function(error, value, callback) {
 
 	SEND_MESSAGE.id = value.id;
 	//SEND_MESSAGE.body = value.body;
-	SEND_MESSAGE.body = "Hyirka";
 	SEND_MESSAGE.users = value.users || null;
 	SEND_MESSAGE.files = value.files || null;
 	SEND_MESSAGE.idto = value.idto;
