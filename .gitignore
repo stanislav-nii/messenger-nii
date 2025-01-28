@@ -5,3 +5,4 @@ tmp/*
 debug.js.json
 package-lock.json
 release.js.json
+release.js
