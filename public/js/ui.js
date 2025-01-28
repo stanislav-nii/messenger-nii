@@ -17,6 +17,25 @@ COMPONENT('searchbox', function() {
 	};
 });
 
+COMPONENT('searchbox_users_form', function() {
+	var self = this;
+	var icon;
+
+	self.noValidate();
+	self.make = function() {
+		self.classes('search-users-form');
+		self.html('<span><i class="fa fa-search"></i></span><div><input type="text" placeholder="{0}" data-jc-bind=""{1} /></div>'.format(self.attr('data-placeholder') || '', self.attr('data-enter') === 'true' ? ' data-jc-keypress="false"' : ''));
+		icon = self.find('.fa');
+		self.event('click', '.fa-times', function() {
+			self.set('');
+		});
+	};
+
+	self.getter2 = self.setter2 = function(value) {
+		icon.toggleClass('fa-search', value ? false : true).toggleClass('fa-times', value ? true : false);
+	};
+});
+
 COMPONENT('click', function() {
 	var self = this;
 
@@ -74,7 +93,7 @@ COMPONENT('message', function() {
 
 		$(window).on('keyup', function(e) {
 			visible && e.keyCode === 27 && self.hide();
-		});
+		});	
 	};
 
 	self.warning = function(message, icon, fn) {
@@ -1589,7 +1608,6 @@ COMPONENT('binder', function() {
 });
 
 COMPONENT('websocket', function() {
-
 	var reconnect_timeout;
 	var self = this;
 	var ws, url;

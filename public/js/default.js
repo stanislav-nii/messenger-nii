@@ -1,3 +1,6 @@
+// var fancybox = import("@fancyapps/ui");
+// var fancyboxcss = import("@fancyapps/ui/dist/fancybox/fancybox.css");
+
 var MARKDOWN = {};
 var REGEXP = {};
 
@@ -57,10 +60,27 @@ function scrollBottom() {
 Tangular.register('markdown', function(value) {
 	var xss = marked_xss_parse(value, this.user.sa);
 
+
 	MARKDOWN.message = this;
+
+	var file_caption = "";
+	var file_url = "";
+	if(MARKDOWN.message.files) {
+		var file_name = MARKDOWN.message.files[0].name.split();
+		const lastDotIndex = file_name.lastIndexOf('.');
+
+		if (lastDotIndex !== -1) 
+			file_caption = file_name.slice(0, lastDotIndex);
+		else file_caption = file_name;
+		file_url = MARKDOWN.message.files[0].url;
+	}
+
 	MARKDOWN.html = marked(marked_features(xss.body)).replace(REGEXP.smiles, function(text) {
 		return text.replace(REGEXP.l, '<').replace(REGEXP.g, '>').replace(REGEXP.quotes, '"');
-	}).replace(/<img/g, '<img class="img-responsive"').replace(REGEXP.table, '<table class="table table-bordered"').replace(/<a\s/g, '<a target="_blank"');
+	}).replace(/<img/g, `<a data-fancybox data-caption=${file_caption} data-src=${file_url} ><img class="img-responsive"').replace(REGEXP.table, '<table class="table table-bordered"`).replace(/<a\s/g, '<a target="_blank"');
+
+
+	
 
 	if (!MARKDOWN.html.replace(REGEXP.tag, '').trim())
 		MARKDOWN.html = MARKDOWN.html.replace(REGEXP.fa, '"fa fa-2x ');

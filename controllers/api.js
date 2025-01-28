@@ -24,8 +24,11 @@ exports.install = function() {
 
 		// Messages
 		//F.route('/api/messages/{id}/',  json_read,     ['*Message']);
-		F.route('/api/messages/{id}/',  json_query,    ['*Message']);
+		//F.route('/api/messages/{id}/',  json_query,    ['*Message']);
 		F.route('/api/files/{id}/',     json_files,    ['*Message']);
+		F.route('/api/message/{id}/', json_message, ['*Message']); 
+	    //F.route('/api/messages/{conversation_id}/{id}',  json_read,   ['*Message']);
+		F.route('/api/messages/{conversation_id}/',  json_query,   ['*Message']);
 		F.route('/api/messages/{conversation_id}/{id}/',  json_remove,   ['*Message', 'delete']);
 
 		// Favorites
@@ -186,6 +189,11 @@ function json_exec(id) {
 function json_files(id) {
 	this.id = id;
 	this.$workflow('files', this.callback());
+}
+
+function json_message(id) {
+	this.id = id;
+	this.$workflow('message', this.callback());
 }
 
 function json_blacklist() {

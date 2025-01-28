@@ -15,10 +15,6 @@ NEWSCHEMA('Task').make(function(schema) {
 	});
 
 	schema.addWorkflow('exec', function(error, model, options, callback, controller) {
-		console.log(callback);
-		console.log("----------------------------");
-		console.log(controller);
-		console.log("----------------------------");
 		NOSQL('tasks').remove(F.path.databases('tasks-backup.nosql')).where('id', controller.id);
 		callback(SUCCESS(true));
 	});

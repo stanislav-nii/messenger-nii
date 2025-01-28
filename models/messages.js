@@ -42,12 +42,6 @@ NEWSCHEMA('Message').make(function(schema) {
 		filter.page((controller.query.page || 1) - 1, controller.query.max + count);
 		filter.callback(function(err, response) {
 			response.forEach(message => {
-				//console.log(message.body + ": " + message.idowner);
-				//console.log(message);
-				//console.log(controller.user.id);
-				// if(message.idowner === controller.user.id){
-				// 	NOSQL(controller.id).modify({unread: false}).where('id', message.id);
-				// }
 				if(message.iduser !== controller.user.id){
 					NOSQL(controller.id).modify({unread: false}).where('id', message.id);
 				}
@@ -56,9 +50,6 @@ NEWSCHEMA('Message').make(function(schema) {
 			// Sets the first message as read message
 			if (controller.query.page === 1 && id && response.length){
 				controller.user.lastmessages[id] = response[0].id;
-				//console.log(controller)
-				// controller.channel
-				// console.log(controller.user.messages);
 			}
 				
 
@@ -68,6 +59,30 @@ NEWSCHEMA('Message').make(function(schema) {
 				output.stats = counter;
 				callback(output);
 			});
+		});
+	});
+
+	schema.addWorkflow('message', function(error, model, options, callback, controller) {
+
+		var id;
+
+		const message_id = controller.id;
+		controller.id = controller.req.user.threadtype + controller.req.user.threadid;
+
+		if (controller.id.startsWith('user')) {
+			id = controller.id.substring(4);
+			controller.id = 'user' + F.global.merge(id, controller.user.id);
+		} else
+			id = controller.id.substring(7);
+
+		if (controller.id[0] === 'c' && controller.user.channels && !controller.user.channels[id]) {
+			error.push('error-user-privileges');
+			return callback();
+		}
+
+		NOSQL(controller.id).find().make(function(builder){;
+			builder.where('id', message_id);
+			builder.callback((err, response) => callback(response));
 		});
 	});
 
@@ -112,11 +127,10 @@ NEWSCHEMA('Message').make(function(schema) {
 			id = controller.id.substring(4);
 			controller.id = 'user' + F.global.merge(id, controller.user.id);
 		}
-		console.log("------------------NOSQL---------------");
-
-		console.log(controller.req.path);
+		
 		NOSQL(controller.id).remove().where('id', controller.req.path[controller.req.path.length - 1]);
 		OPERATION('messages.cleaner', controller.id, NOOP)
 		callback(SUCCESS(true));
 	});
+
 });

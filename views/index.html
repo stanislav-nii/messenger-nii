@@ -3,6 +3,7 @@
 
 <!DOCTYPE html>
 <html>
+
 <head>
 	<meta charset="utf-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=10" />
@@ -13,7 +14,8 @@
 	<meta name="apple-mobile-web-app-title" content="@{config.name}" />
 	<link rel="apple-touch-icon" href="/icon.png" />
 	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
-	<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Sans+Pro:400,200,700&subset=latin,latin-ext" />
+	<link rel="stylesheet"
+		href="//fonts.googleapis.com/css?family=Source+Sans+Pro:400,200,700&subset=latin,latin-ext" />
 	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.26.0/codemirror.min.css" />
 	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/github.min.css" />
 	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -24,12 +26,19 @@
 	<script src="//cdnjs.cloudflare.com/ajax/libs/marked/0.3.6/marked.min.js"></script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/favico.js/0.3.10/favico.min.js"></script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.3/FileSaver.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" />
+
 	@{import('meta', 'default.css', 'default.js', 'favicon.ico', 'head')}
 </head>
+
+
 <body data-jc="exec,binder" class="theme-@{user.theme}@{if user.sa} sa@{fi}">
 
 	<div data-jc="audio" data-jc-path="common.volume"></div>
-	<div data-jc="calendar" data-days="@(SU,MO,TU,WE,TH,FR,SO)" data-months="@(January,February,March,April,May,June,July,August,September,October,November,December)" data-today="@(Set today)" data-firstday="0"></div>
+	<div data-jc="calendar" data-days="@(SU,MO,TU,WE,TH,FR,SO)"
+		data-months="@(January,February,March,April,May,June,July,August,September,October,November,December)"
+		data-today="@(Set today)" data-firstday="0"></div>
 	<div data-jc="clipboardimage"></div>
 	<div data-jc="confirm"></div>
 	<div data-jc="fontawesome" data-search="@(Search icons ...)"></div>
@@ -38,14 +47,25 @@
 	<div data-jc="nativenotifications" data-jc-path="common.notifications"></div>
 	<div data-jc="websocket" data-jc-id="websocket" data-url="/"></div>
 
+
 	<section class="panel">
 
 		<div class="user">
-			<div class="user-name singleline"><img src="/photos/@{user.picture}.jpg" height="30" alt="@{user.name}" />@{user.name}</div>
-			<div class="user-stats"><i class="fa fa-circle online mr5" data-b="common.online" data-b-class="n => n ? '+online -offline' : '-online +offline'"></i>@(Online:)<span data-b="current.online" data-b-html="n => n + 1" class="b ml5"></span> / <span data-b="current.users.length" data-b-html="n => Tangular.helpers.pluralize(n, @('# users', '# user', '# users', '# users'))"></span></div>
+			<div class="user-name singleline"><img src="/photos/@{user.picture}.jpg" height="30"
+					alt="@{user.name}" />@{user.name}</div>
+			<div class="user-stats"><i class="fa fa-circle online mr5" data-b="common.online"
+					data-b-class="n => n ? '+online -offline' : '-online +offline'"></i>@(Online:)<span
+					data-b="current.online" data-b-html="n => n + 1" class="b ml5"></span> / <span
+					data-b="current.users.length"
+					data-b-html="n => Tangular.helpers.pluralize(n, @('# users', '# user', '# users', '# users'))"></span>
+			</div>
 			<div class="user-settings">
-				<i class="fa fa-volume-up exec" data-path="common.sounds" data-value="!common.sounds" data-b="common.sounds" data-b-class="n => n ? '+fa-volume-up -off -fa-volume-off' : '-fa-volume-up +off +fa-volume-off'"></i>
-				<i class="fa fa-bell exec" data-path="common.notifications" data-value="!common.notifications" data-b="common.notifications" data-b-class="n => n ? '+fa-bell -off -fa-bell-slash-o' : '-fa-bell +off +fa-bell-slash-o'"></i>
+				<i class="fa fa-volume-up exec" data-path="common.sounds" data-value="!common.sounds"
+					data-b="common.sounds"
+					data-b-class="n => n ? '+fa-volume-up -off -fa-volume-off' : '-fa-volume-up +off +fa-volume-off'"></i>
+				<i class="fa fa-bell exec" data-path="common.notifications" data-value="!common.notifications"
+					data-b="common.notifications"
+					data-b-class="n => n ? '+fa-bell -off -fa-bell-slash-o' : '-fa-bell +off +fa-bell-slash-o'"></i>
 			</div>
 			<div class="clearfix"></div>
 		</div>
@@ -54,7 +74,12 @@
 		<hr class="nmt nmb" />
 		<div id="panel">
 			<div data-jc="search" data-jc-path="panel.search" data-selector=".jsearch">
-				<div class="caption jsearch" data-search=""><div class="operation exec" data-path="common.form" data-value="'formblacklist'"><i class="fa fa-rss-square"></i></div>@{if user.sa}<div class="operation exec" data-path="common.form" data-value="'formchannel'"><i class="fa fa-plus-square-o"></i></div>@{fi}@(Channels)</div>
+				<div class="caption jsearch" data-search="">
+					<div class="operation exec" data-path="common.form" data-value="'formblacklist'"><i
+							class="fa fa-rss-square"></i></div>@{if user.sa}<div class="operation exec"
+						data-path="common.form" data-value="'formchannel'"><i class="fa fa-plus-square-o"></i></div>
+					@{fi}@(Channels)
+				</div>
 				<nav data-jc="repeater" data-jc-path="current.channels" class="nav-channels">
 					<script type="text/html">
 						{{ if is && visible }}
@@ -63,7 +88,9 @@
 					</script>
 				</nav>
 
-				<div class="caption jsearch" data-search=""><div class="operation" data-name="users"><i class="fa fa-plus-square-o"></i></div>@(Direct messages)</div>
+				<div class="caption jsearch" data-search="">
+					<div class="operation" data-name="users"><i class="fa fa-plus-square-o"></i></div>@(Direct messages)
+				</div>
 				<nav data-jc="repeater" data-jc-path="current.recent" class="nav-users">
 					<script type="text/html">
 						{{ if !me }}
@@ -87,7 +114,8 @@
 
 	<section class="body">
 		<header id="header">
-			<a href="javascript:void(0)" class="mainmenu visible-xs exec" data-exec="mainmenu_toggle"><i class="fa fa-navicon"></i></a>
+			<a href="javascript:void(0)" class="mainmenu visible-xs exec" data-exec="mainmenu_toggle"><i
+					class="fa fa-navicon"></i></a>
 			<div class="row">
 				<div class="col-md-4">
 					<h2 data-b="current.title" data-b-html="n => n" class="singleline">...</h2>
@@ -96,32 +124,53 @@
 				<div class="col-lg-4 visible-lg">
 					<div data-jc="nosqlcounter" data-jc-path="common.stats"></div>
 				</div>
-				<div class="col-lg-4 col-md-5 col-lg-offset-0 col-md-offset-3 hidden m" data-b="common.page" data-b-visible="n => n === 'chat' || n === 'users'">
-					<div class="header-button header-button-mute" data-b="common.page" data-b-class="n => n === 'chat' ? '-header-button-disabled' : '+header-button-disabled'"><a href="javascript:void(0)" class="exec" data-exec="chat_mute" title="@(Mute for 1 hour)"><i class="fa"></i></a></div>
-					<div class="header-button" data-b="common.page" data-b-class="n => n === 'chat' ? '-header-button-disabled' : '+header-button-disabled'"><a href="javascript:void(0)" class="exec" data-exec="chat_files" title="@(Files)"><i class="fa fa-copy"></i></a></div>
-					<div data-jc="searchbox" data-jc-path="common.search" data-enter="true" data-placeholder="@(Type a phrase and press enter)"></div>
+				<div class="col-lg-4 col-md-5 col-lg-offset-0 col-md-offset-3 hidden m" data-b="common.page"
+					data-b-visible="n => n === 'chat' || n === 'users'">
+					<div style="visibility: hidden;" class="header-button header-button-mute" data-b="common.page"
+						data-b-class="n => n === 'chat' ? '-header-button-disabled' : '+header-button-disabled'"><a
+							href="javascript:void(0)" class="exec" data-exec="chat_mute" title="@(Mute for 1 hour)"><i
+								class="fa"></i></a></div>
+					<div class="header-button" data-b="common.page"
+						data-b-class="n => n === 'chat' ? '-header-button-disabled' : '+header-button-disabled'"><a
+							href="javascript:void(0)" class="exec" data-exec="chat_files" title="@(Files)"><i
+								class="fa fa-copy"></i></a></div>
+					<div data-jc="searchbox" data-jc-path="common.search" data-enter="true"
+						data-placeholder="@(Type a phrase and press enter)"></div>
 				</div>
 			</div>
 		</header>
 		<div id="content">
-			<div data-jc="page" data-jc-path="common.page" data-if="tasks" data-template="/templates/tasks.html" data-reload="tasks_reload"></div>
-			<div data-jc="page" data-jc-path="common.page" data-if="favorite" data-template="/templates/favorite.html" data-reload="favorites_reload"></div>
-			<div data-jc="page" data-jc-path="common.page" data-if="chat" data-template="/templates/chat.html" data-reload="chat_reload"></div>
-			<div data-jc="page" data-jc-path="common.page" data-if="users" data-template="/templates/users.html" data-reload="users_reload"></div>
-			<div data-jc="page" data-jc-path="common.page" data-if="settings" data-template="/templates/settings.html" data-reload="settings_reload"></div>
+			<div data-jc="page" data-jc-path="common.page" data-if="tasks" data-template="/templates/tasks.html"
+				data-reload="tasks_reload"></div>
+			<div data-jc="page" data-jc-path="common.page" data-if="favorite" data-template="/templates/favorite.html"
+				data-reload="favorites_reload"></div>
+			<div data-jc="page" data-jc-path="common.page" data-if="chat" data-template="/templates/chat.html"
+				data-reload="chat_reload"></div>
+			<div data-jc="page" data-jc-path="common.page" data-if="users" data-template="/templates/users.html"
+				data-reload="users_reload"></div>
+			<div data-jc="page" data-jc-path="common.page" data-if="settings" data-template="/templates/settings.html"
+				data-reload="settings_reload"></div>
 			@{components('messenger')}
 		</div>
 		<div id="messagebox">
-			<div data-jc="codemirror" data-jc-path="messages.message" data-type="markdown" data-height="100%" data-placeholder="@(Type a message in markdown syntax or drop file.)" data-maxlength="20000"></div>
+			<div data-jc="codemirror" data-jc-path="messages.message" data-type="markdown" data-height="100%"
+				data-placeholder="@(Type a message in markdown syntax or drop file.)" data-maxlength="100000"></div>
 			<div id="status">
 				<div class="border exec b blue" data-exec="codemirror_icons"><i class="fa fa-smile-o"></i></div>
-				<div class="border exec" data-exec="codemirror_help" title="@(Help)"><i class="fa fa-question-circle-o"></i></div>
-				<div class="border exec" data-exec="codemirror_thumbsup" title="@(Thumbs Up!)"><i class="fa fa-thumbs-up"></i></div>
-				<div class="border exec" data-exec="codemirror_upload" title="@(Upload)"><i class="fa fa-folder-o"></i></div>
-				<div class="border exec" data-exec="chat_secret" data-b="chat.secret" data-b-class="value ? '+selected' : '-selected'" title="@(Toggle a secret messaging)"><i class="fa fa-eye"></i></div>
-				<div class="border exec markasunread" data-exec="chat_unread" title="@(Mark as unread)"><i class="fa fa-history"></i></div>
+				<div class="border exec" data-exec="codemirror_help" title="@(Help)"><i
+						class="fa fa-question-circle-o"></i></div>
+				<div class="border exec" data-exec="codemirror_thumbsup" title="@(Thumbs Up!)"><i
+						class="fa fa-thumbs-up"></i></div>
+				<div class="border exec" data-exec="codemirror_upload" title="@(Upload)"><i class="fa fa-folder-o"></i>
+				</div>
+				<div class="border exec" data-exec="chat_secret" data-b="chat.secret"
+					data-b-class="value ? '+selected' : '-selected'" title="@(Toggle a secret messaging)"><i
+						class="fa fa-eye"></i></div>
+				<div class="border exec markasunread" data-exec="chat_unread" title="@(Mark as unread)"><i
+						class="fa fa-history"></i></div>
 				<div class="border exec" data-exec="chat_export" title="@(Export)"><i class="fa fa-print"></i></div>
-				<div class="border black exec" data-exec="codemirror_enter"><i class="fa fa-keyboard-o mr5"></i><span data-b="common.enter" data-b-html="n => n ? '@(Enter)' : '@(CTRL+Enter)'"></span></div>
+				<div class="border black exec" data-exec="codemirror_enter"><i class="fa fa-keyboard-o mr5"></i><span
+						data-b="common.enter" data-b-html="n => n ? '@(Enter)' : '@(CTRL+Enter)'"></span></div>
 				<div data-jc="typing">
 					<script type="text/html">
 						<div data-id="{{ id }}"><img src="/photos/{{ picture }}.jpg" height="18" alt="{{ name }}" /><b>{{ name }}</b> @(is typing.)</div>
@@ -131,12 +180,131 @@
 		</div>
 	</section>
 
-	<div data-jc="importer" data-jc-path="common.form" data-if="value === 'formuser'" data-url="/forms/formuser.html" data-reload="formuser_reload"></div>
-	<div data-jc="importer" data-jc-path="common.form" data-if="value === 'formchannel'" data-url="/forms/formchannel.html" data-reload="formchannel_reload"></div>
-	<div data-jc="importer" data-jc-path="common.form" data-if="value === 'searchresults'" data-url="/forms/searchresults.html" data-reload="searchresults_reload"></div>
+	<div data-jc="importer" data-jc-path="common.form" data-if="value === 'formuser'" data-url="/forms/formuser.html"
+		data-reload="formuser_reload"></div>
+	<div data-jc="importer" data-jc-path="common.form" data-if="value === 'formchannel'"
+		data-url="/forms/formchannel.html" data-reload="formchannel_reload"></div>
+	<div data-jc="importer" data-jc-path="common.form" data-if="value === 'searchresults'"
+		data-url="/forms/searchresults.html" data-reload="searchresults_reload"></div>
 	<div data-jc="importer" data-jc-path="common.form" data-if="value === 'help'" data-url="/forms/help.html"></div>
-	<div data-jc="importer" data-jc-path="common.form" data-if="value === 'files'" data-url="/forms/files.html" data-reload="files_reload"></div>
-	<div data-jc="importer" data-jc-path="common.form" data-if="value === 'formblacklist'" data-url="/forms/formblacklist.html" data-reload="formblacklist_reload"></div>
+	<div data-jc="importer" data-jc-path="common.form" data-if="value === 'files'" data-url="/forms/files.html"
+		data-reload="files_reload"></div>
+	<div data-jc="importer" data-jc-path="common.form" data-if="value === 'users'" data-url="/forms/users.html"
+		data-reload="users_reload"></div>
+	<div data-jc="importer" data-jc-path="common.form" data-if="value === 'formblacklist'"
+		data-url="/forms/formblacklist.html" data-reload="formblacklist_reload"></div>
+
+	<!--  context menu html -->
+
+	<div class="wrapper-context-menu" style="display:none">
+		<div class="content">
+			<ul class="menu">
+				<li class="item forward">
+					<i class="fs15 fa fa-share"></i>
+					<span>Переслать</span>
+				</li>
+				<li class="item delete">
+					<i class="fs15 red fa fa-trash"></i>
+					<span>Удалить</span>
+				</li>
+			</ul>
+		</div>
+	</div>
+
+	<!-- end context menu html -->
+
+	<style>
+		/* .wrapper-context-menu {
+			visibility: hidden;
+			position: absolute;
+			width: 300px;
+			border-radius: 10px;
+			background: #fff;
+			box-shadow: 0 12px 35px rgba(0, 0, 0, 0.1);
+		}
+
+		.content .item {
+			list-style: none;
+			display: flex;
+			width: 100%;
+			cursor: pointer;
+			align-items: center;
+			border-radius: 5px;
+			margin-bottom: 2px;
+			padding: 0 5px 0 10px;
+		}
+
+		.content .item:hover {
+			background: #f2f2f2;
+		}
+
+		.hidden {
+			display: none;
+		} */
+
+		.content {
+			background-color: #f6f6f6;
+			border-radius: 4px;
+			box-shadow: 10px 10px 20px #40404069;
+		}
+
+		.menu {
+			margin: 0;
+			display: block;
+			width: 100%;
+			padding: 1px;
+		}
+
+		.content .item.delete:hover {
+			color: red;
+		}
+
+		.content .item .fs15 {
+			padding: 0 5px 0 0;
+		}
+
+		.content .item.delete .fs15 {
+			padding: 0 8px 0 0;
+		}
+
+		.content .item:hover {
+			background-color: #c4c3c3;
+			color: #f6f6f6;
+			border-radius: 3px;
+		}
+
+		.content .item {
+			position: relative;
+			font: inherit;
+			border: 0;
+			padding: 8px 8px;
+			padding-right: 36px;
+			width: 100%;
+			border-radius: 8px;
+			display: flex;
+			align-items: center;
+		}
+
+		.wrapper-context-menu {
+			position: absolute;
+			width: 220px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.wrapper-context-menu ul {
+			list-style: none;
+		}
+
+		/* .sub-left {
+			left: -100%;
+			right: 0;
+		} */
+	</style>
+
+
+
 
 	<input type="file" id="uploadfile" class="hidden" />
 
@@ -144,9 +312,82 @@
 
 	<script>
 
+		//////////////////////////////////////////////////CONTEXT MENU
+
+		const contextMenu = document.querySelector(".wrapper-context-menu");
+
+		var messageElement;
+
+		document.addEventListener("contextmenu", e => {
+			e.preventDefault();
+			let x = e.clientX, y = e.clientY,
+				winWidth = window.innerWidth,
+				winHeight = window.innerHeight,
+				cmWidth = contextMenu.offsetWidth,
+				cmHeight = contextMenu.offsetHeight;
+
+
+			if (document.elementFromPoint(x, y).closest('.chat-message')) {
+				var contextMenuWidth = 220;
+				var leftPos = '';
+				if (x < window.innerWidth - contextMenuWidth) {
+					leftPos = `${x}px`;
+				} else {
+					leftPos = `${x - contextMenuWidth}px`;
+				}
+				
+				messageElement = document.elementFromPoint(x, y).closest('.chat-message');
+
+				if (messageElement.classList.contains("me")) {
+					contextMenu.getElementsByClassName("delete")[0].classList.remove("hidden");
+				}
+				else {
+					contextMenu.getElementsByClassName("delete")[0].classList.add("hidden");
+				}
+				contextMenu.style.left = leftPos;
+				contextMenu.style.top = `${y}px`;
+				contextMenu.style.display = "block";
+
+			}
+			else contextMenu.style.display = "none";
+
+		});
+
+		document.getElementsByClassName("item forward")[0].addEventListener("click", e => {
+			e.preventDefault();
+			const messageId = messageElement.getAttribute("data-id");
+
+			AJAX('GET /api/message/{0}/'.format(messageId), function (response) {
+				SET('common.forward', response[0].body);
+				SET('common.form', 'users');
+			});
+		});
+
+		document.getElementsByClassName("item delete")[0].addEventListener("click", e => {
+			e.preventDefault();
+			const messageId = messageElement.getAttribute("data-id");
+
+			FIND('confirm').confirm('@(Удалить сообщение?)', ['@(Да)', '@(Нет)'], function (index) {
+				!index && AJAX('DELETE /api/messages/{0}/{1}/'.format((current.route.type === 'channel' ? 'channel' : 'user') + current.route.item.id, messageId), setTimeout2('contentscroll', function () { chat_reload(1); }, 200));
+			});
+
+		});
+
+		document.addEventListener("wheel", e => {
+			let x = e.clientX, y = e.clientY;
+			if (!document.elementFromPoint(x, y).closest('.wrapper-context-menu')) contextMenu.style.display = "none";
+		});
+
+		document.addEventListener("click", () => contextMenu.style.display = "none");
+
+		////////////////////////////////////////////////////end context menu
+
+
+
+
 		MAIN.$version = 3;
 
-		MAKE('common', function() {
+		MAKE('common', function () {
 			this.enter == null && (this.enter = true);
 			this.sounds == null && (this.sounds = true);
 			this.notifications == null && (this.notifications = true);
@@ -171,7 +412,7 @@
 
 		var messages = { message: '' };
 
-		MAKE('current', function() {
+		MAKE('current', function () {
 			this.route = {};
 			this.online = 0;
 			!this.users && (this.users = EMPTYARRAY);
@@ -180,18 +421,18 @@
 		});
 
 		var user = PARSE($('#userdata').html());
-		var favicon = new Favico({ position : 'up' });
+		var favicon = new Favico({ position: 'up' });
 
 		CACHEPATH('current.users', '1 year');
 		CACHEPATH('current.channels', '1 year');
 
 		NAVIGATION.clientside('.jrouting');
 
-		$(document).on('click', '.userlinker', function(e) {
+		$(document).on('click', '.userlinker', function (e) {
 			codemirror_adduser(this.getAttribute('data-linker'));
 		});
 
-		$(document).on('click', '.operation', function(e) {
+		$(document).on('click', '.operation', function (e) {
 			e.preventDefault();
 			e.stopPropagation();
 			var el = $(this);
@@ -204,10 +445,10 @@
 					tmp = current.channels.findItem('id', el.parent().attr('data-id'));
 					SET('common.form', 'formchannel');
 					SETTER('loading', 'show');
-					WAIT(function() {
+					WAIT(function () {
 						return window.formchannel;
-					}, function() {
-						setTimeout(function() {
+					}, function () {
+						setTimeout(function () {
 							SET('formchannel', CLONE(tmp), true);
 							SETTER('loading', 'hide', 1000);
 						}, 200);
@@ -221,11 +462,11 @@
 						MSG_RECENT.id = tmp.id;
 						SETTER('websocket', 'send', MSG_RECENT);
 					}
-				break;
+					break;
 			}
 		});
 
-		ON('online', function(is) {
+		ON('online', function (is) {
 			is && current.ready && current.route && current.route.type && REDIRECT(NAVIGATION.url);
 			SET('common.online', is);
 			if (current.ready) {
@@ -235,8 +476,8 @@
 		});
 
 		ON('#websocket', refresh_unread);
-		ON('message', function(response) {
 
+		ON('message', function (response) {
 			EMIT('messenger.message', response);
 
 			var tmp, container;
@@ -266,7 +507,7 @@
 					tmp = response.users.findItem('id', user.id);
 					tmp.me = true;
 
-					response.channels.forEach(function(item) {
+					response.channels.forEach(function (item) {
 						item.is = user.channels ? user.channels[item.id] === true : true;
 						item.visible = user.blacklist ? (user.blacklist[item.id] ? false : true) : true;
 					});
@@ -307,14 +548,13 @@
 			}
 		});
 
-		$(window).focus(function() {
+		$(window).focus(function () {
 			refresh_unread(true);
 		});
 
-		ON('@codemirror', function(component) {
+		ON('@codemirror', function (component) {
 
-			component.enter = function(type) {
-				
+			component.enter = function (type) {
 
 				if ((type && common.enter) || (!type && !common.enter))
 					return CodeMirror.Pass;
@@ -334,37 +574,7 @@
 				MSG_MESSAGE.users = findusers(MSG_MESSAGE.body);
 				MSG_MESSAGE.users && (MSG_MESSAGE.users[user.id] = true);
 
-				
-				EMIT('messenger.send', MSG_MESSAGE);
 
-				if (MSG_MESSAGE.body) {
-					component.set('');
-					SETTER('websocket', 'send', MSG_MESSAGE);
-				}
-
-				SETTER('fontawesome', 'hide');
-				common.search && SET('common.search', '');
-			};
-			
-			component.enterForUpload = function(type) {
-
-				
-				// "chat" is defined in /templates/chat.html
-				if (chat.lastmessage && chat.lastmessage.modified) {
-					MSG_MESSAGE.secret = chat.lastmessage.secret;
-					MSG_MESSAGE.id = chat.lastmessage.id;
-					chat.lastmessage.modified = false;
-				} else {
-					MSG_MESSAGE.id = undefined;
-					MSG_MESSAGE.secret = chat.secret;
-				}
-
-				MSG_MESSAGE.body = component.getValue().trim();
-				MSG_MESSAGE.files = findfiles(MSG_MESSAGE.body);
-				MSG_MESSAGE.users = findusers(MSG_MESSAGE.body);
-				MSG_MESSAGE.users && (MSG_MESSAGE.users[user.id] = true);
-
-				
 				EMIT('messenger.send', MSG_MESSAGE);
 
 				if (MSG_MESSAGE.body) {
@@ -376,7 +586,9 @@
 				common.search && SET('common.search', '');
 			};
 
-			component.edit = function(edit) {
+
+
+			component.edit = function (edit) {
 				// "chat" is defined in /templates/chat.html
 				if (!chat.lastmessage || chat.lastmessage.body === ':thumbs-up:')
 					return CodeMirror.pass;
@@ -390,11 +602,11 @@
 
 			};
 
-			component.typing = function() {
+			component.typing = function () {
 				current.online && SETTER('websocket', 'send', MSG_TYPING);
 			};
 
-			component.upload = function(editor, e, callback) {
+			component.upload = function (editor, e, callback) {
 
 				if (e.preventDefault) {
 					e.preventDefault();
@@ -410,7 +622,7 @@
 				for (var i = 0, length = files.length; i < length; i++)
 					data.append('file' + i, files[i]);
 
-				UPLOAD('/api/upload/', data, function(data, err) {
+				UPLOAD('/api/upload/', data, function (data, err) {
 
 					SETTER('loading', 'hide', 100);
 
@@ -433,36 +645,35 @@
 							push.push('[' + file.filename + '](' + file.url + ')');
 					}
 
-					
-					
+
+
 					editor.replaceSelection(push.join('\n'));
 					SETTER('fontawesome', 'hide');
-					
+
 					callback && callback();
-					
+
 
 					//codemirror_thumbsup();
-				
-					component.enterForUpload(component.codemirror(), self.files, function() {
-						  console.log("inside upload");
-			        });
+
+					//component.enter(component.codemirror(), self.files);
+					component.enter(0);
 				});
 			};
 		});
 
-		ON('knockknock', function() {
+		ON('knockknock', function () {
 
 			if ((((Date.now() - common.ticks) / 1000) / 60) > 60) {
 				location.reload(true);
 				return;
 			}
 
-			$('.datetime').each(function() {
+			$('.datetime').each(function () {
 				var el = $(this);
 				el.html(Tangular.helpers.time(el.attr('data-value')));
 			});
 
-			$('.datexpire').each(function() {
+			$('.datexpire').each(function () {
 				var el = $(this);
 				el.html(Tangular.helpers.expiration(el.attr('data-value')));
 			});
@@ -470,35 +681,35 @@
 			SETTER('websocket', 'send', MSG_UNREAD);
 		});
 
-		ON('404', function() {
+		ON('404', function () {
 			REDIRECT('/');
 		});
 
-		ROUTE('/', function() {
+		ROUTE('/', function () {
 			refresh_place();
 			SET('common.page', 'tasks');
 		});
 
-		ROUTE('/favorite/', function() {
+		ROUTE('/favorite/', function () {
 			refresh_place();
 			SET('common.page', 'favorite');
 		});
 
-		ROUTE('/users/', function() {
+		ROUTE('/users/', function () {
 			refresh_place();
 			SET('common.search', '');
 			SET('common.page', 'users');
 		});
 
-		ROUTE('/settings/', function() {
+		ROUTE('/settings/', function () {
 			refresh_place();
 			SET('common.page', 'settings');
 		});
 
-		ROUTE('/channels/{linker}/', function(linker) {
-			WAIT(function() {
+		ROUTE('/channels/{linker}/', function (linker) {
+			WAIT(function () {
 				return current.channels !== EMPTYARRAY && MAIN.loaded;
-			}, function() {
+			}, function () {
 				var item = current.channels.findItem('linker', linker);
 				if (item) {
 					if (user.channels && !user.channels[item.id])
@@ -521,10 +732,10 @@
 			});
 		});
 
-		ROUTE('/users/{linker}/', function(linker) {
-			WAIT(function() {
+		ROUTE('/users/{linker}/', function (linker) {
+			WAIT(function () {
 				return current.users !== EMPTYARRAY && MAIN.loaded;
-			}, function() {
+			}, function () {
 				var item = current.users.findItem('linker', linker);
 				if (item && item.id !== user.id) {
 					current.route.type = 'user';
@@ -548,34 +759,36 @@
 		});
 
 		// Highlight the current link in the panel
-		ON('location', function() {
+		ON('location', function () {
 
 			current.ready && isSTANDALONE && CACHE('location', NAVIGATION.url, '5 minutes');
 
 			$('.panel').removeClass('panel-xs');
-			setTimeout2('location', function() {
+			setTimeout2('location', function () {
 				var nav = $('.panel').find('nav');
 				nav.find('.selected').removeClass('selected');
 				nav.find('a[href="{0}"]'.format(NAVIGATION.url)).addClass('selected');
 			}, 50);
 		});
 
-		isSTANDALONE && ON('messenger.ready', function() {
+		isSTANDALONE && ON('messenger.ready', function () {
 			var url = CACHE('location');
 			url && url !== NAVIGATION.url && REDIRECT(url);
 		});
 
-		ON('clipboardimage', function(base64) {
-			SETTER('loading', 'show');
-			AJAX('POST /api/upload/base64/', { file: base64 }, function(response, err) {
+		ON('clipboardimage', function (base64) {
+			//SETTER('loading', 'show');
+			AJAX('POST /api/upload/base64/', { file: base64 }, function (response, err) {
 				SETTER('loading', 'hide', 500);
+				//FIND('codemirror').codemirror().replaceSelection('![@(Screenshot from clipboard)](' + response.url + ')');
 				FIND('codemirror').codemirror().replaceSelection('![@(Screenshot from clipboard)](' + response.url + ')');
+				FIND('codemirror').enter(0);
 			});
 		});
 
 		function refresh_online() {
 			var count = 0;
-			current.users.forEach(function(item) {
+			current.users.forEach(function (item) {
 				item.online && item.id !== user.id && (count++);
 			});
 			current.online !== count && SET('current.online', count);
@@ -592,7 +805,7 @@
 		function refresh_recent() {
 			var recent = [];
 
-			current.users.forEach(function(item) {
+			current.users.forEach(function (item) {
 				user.recent[item.id] && recent.push(item);
 			});
 
@@ -617,13 +830,13 @@
 
 			var count = 0;
 
-			keys.forEach(function(key) {
+			keys.forEach(function (key) {
 				count += user.unread[key];
 			});
 
 			favicon.badge(count);
 
-			$('#panel').find('.jrouting').each(function() {
+			$('#panel').find('.jrouting').each(function () {
 				var el = $(this);
 				var id = el.attr('data-id');
 				id && el.toggleClass('highlight', user.unread[id] ? true : false);
@@ -656,7 +869,7 @@
 		}
 
 		function codemirror_icons() {
-			SETTER('fontawesome', 'show', WIDTH() === 'xs' ? 0 : 240, $(window).height() - 400, function(icon) {
+			SETTER('fontawesome', 'show', WIDTH() === 'xs' ? 0 : 240, $(window).height() - 400, function (icon) {
 				var editor = FIND('codemirror').codemirror();
 				var str = editor.getSelection() || editor.getValue();
 				var is = str.substring(str.length - 1) === ' ' || str.length === 0;
@@ -687,15 +900,15 @@
 			$('.panel').toggleClass('panel-xs');
 		}
 
-		$('#uploadfile').on('change', function(e) {
+		$('#uploadfile').on('change', function (e) {
 			var component = FIND('codemirror');
 			var self = this;
-			component.upload(component.codemirror(), self.files, function() {
+			component.upload(component.codemirror(), self.files, function () {
 				self.value = '';
 			});
 		});
 
-		Tangular.register('expiration', function(value) {
+		Tangular.register('expiration', function (value) {
 			var diff = Date.now() - value.parseDate().getTime();
 			var minutes = Math.abs(((diff / 1000) / 60) >> 0);
 			if (minutes < 60) {
@@ -712,7 +925,7 @@
 			return @('in ' + days + ' ' + Tangular.helpers.pluralize(days, 'days', 'day', 'days', 'days') + ' ago');
 		});
 
-		Tangular.register('time', function(value) {
+		Tangular.register('time', function (value) {
 
 			if (!value)
 				return;
@@ -742,10 +955,15 @@
 			return @(years + ' ' + Tangular.helpers.pluralize(years, 'years', 'year', 'years', 'years') + ' ago');
 		});
 
-		Tangular.register('month', function(value) {
+		Tangular.register('month', function (value) {
 			return [@('january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december')][value - 1];
 		});
+
+		Fancybox.bind('[data-fancybox]', {
+			//
+		}); 
 	</script>
 
 </body>
+
 </html>

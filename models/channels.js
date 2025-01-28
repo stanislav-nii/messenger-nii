@@ -11,7 +11,7 @@ NEWSCHEMA('Channel').make(function(schema) {
 		// 	error.push('error-user-privileges');
 		// 	return callback();
 		// }
-
+	
 		var item = F.global.channels.findItem('id', controller.id);
 		!item && error.push('error-channel-404');
 		callback(item);

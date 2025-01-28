@@ -114,13 +114,11 @@ function messages() {
 				message.type === 'user' && iduser !== message.id && (client.user.recent[message.id] = true);
 				client.user.unread[message.id] && (delete client.user.unread[message.id]);
 				self && self.send(MSG_READ, function(id, m) {
-					//console.log(client.user);
-					console.log("m.user.id: " + m.user.id + "\t" + "client.user.id: " + client.user.id);
-					console.log("m.threadid: " + m.threadid + "\t" + "client.threadid: " + client.threadid);
 					if (m.user.id !== client.user.id && ((m.threadid === client.threadid) || (m.user.id === client.threadid && (m.threadid === client.user.id))) && (!message.users || message.users[m.user.id])) {
 						return true;
 					}
 				});
+				
 				break;
 			case 'mute':
 
@@ -159,8 +157,22 @@ function messages() {
 
 			// Real message
 			case 'message':
-				//console.log(message);
 				!client.user.blocked && F.global.sendmessage(client, message);
+				break;
+
+			case 'forward':
+				const THREADTYPE = client.threadtype;
+				const THREADID = client.threadid;
+
+				client.threadtype = message.recipienttype;
+				client.threadid = message.recipientid;
+
+				!client.user.blocked && F.global.sendmessage(client, message);
+
+				client.threadtype = THREADTYPE;
+				client.threadid = THREADID;
+
+				//!client.user.blocked && F.global.forward(client, message);
 				break;
 		}
 	});
@@ -335,4 +347,25 @@ F.global.sendmessage = function(client, message) {
 		message.files && message.files.length && NOSQL(dbname + '-files').insert(message);
 		OPERATION('messages.cleaner', dbname, NOOP);
 	}
+};
+
+F.global.forward = function (client, message) {
+	var self = F.global.websocket;
+	var tmp, idchannel, is;
+	var id = message.id;
+	var iduser = client.user.id;
+
+	message.id = id ? id : UID();
+	message.datecreated = F.datetime = new Date();
+	message.iduser = iduser;
+	message.mobile = client.req ? client.req.mobile : false;
+	message.robot = client.send ? false : true;
+	message.unread = true;
+
+	if (!message.type)
+		message.type = 'forward';
+
+	//client.user.lastmessages[client.threadid] = message.id;
+
+	console.log(client);
 };
