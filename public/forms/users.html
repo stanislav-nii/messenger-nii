@@ -80,6 +80,8 @@
 
 	function forward_message(item) {
 
+
+		console.log("forward_message func");
 		MSG_MESSAGE.type = 'forward';
 		MSG_MESSAGE.id = undefined;
 
@@ -92,13 +94,13 @@
 		MSG_MESSAGE.users && (MSG_MESSAGE.users[user.id] = true);
 
 
-		EMIT('messenger.send', MSG_MESSAGE);
+		//EMIT('messenger.send', MSG_MESSAGE);
 
 		if (MSG_MESSAGE.body) {
 			SETTER('websocket', 'send', MSG_MESSAGE);
 		}
 
-		MSG_MESSAGE.type = 'message';
+		//MSG_MESSAGE.type = 'message';
 	}
 	
 </script>

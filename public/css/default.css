@@ -420,3 +420,7 @@ li.CodeMirror-hint-active { background-color: black; color: white; }
 	background-color: rgba(199, 230, 255);
 	margin-left: -17px;
   }
+
+  #component33 .user-item {
+	width: 33%;
+  }

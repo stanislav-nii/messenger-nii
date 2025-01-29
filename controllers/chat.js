@@ -161,24 +161,31 @@ function messages() {
 				break;
 
 			case 'forward':
+
+				if(client.threadid === message.recipientid) {
+					message.type = "message";
+					!client.user.blocked && F.global.sendmessage(client, message);
+				} else {
 				const THREADTYPE = client.threadtype;
 				const THREADID = client.threadid;
-
+			
 				client.threadtype = message.recipienttype;
 				client.threadid = message.recipientid;
-
-				!client.user.blocked && F.global.sendmessage(client, message);
+				
+				!client.user.blocked && F.global.forward(client, message);
 
 				client.threadtype = THREADTYPE;
 				client.threadid = THREADID;
-
-				//!client.user.blocked && F.global.forward(client, message);
+				}
 				break;
+
 		}
 	});
 }
 
 F.global.sendmessage = function(client, message) {
+
+	console.log("sendmessage:   ");
 	if (!client.threadid || !client.threadtype)
 		return;
 
@@ -270,6 +277,7 @@ F.global.sendmessage = function(client, message) {
 			}
 		}
 
+		
 		client.send && client.send(message);
 
 	} else {
@@ -350,6 +358,11 @@ F.global.sendmessage = function(client, message) {
 };
 
 F.global.forward = function (client, message) {
+	message.type = "message";
+	console.log("sendmessage:   ");
+	if (!client.threadid || !client.threadtype)
+		return;
+
 	var self = F.global.websocket;
 	var tmp, idchannel, is;
 	var id = message.id;
@@ -362,10 +375,158 @@ F.global.forward = function (client, message) {
 	message.robot = client.send ? false : true;
 	message.unread = true;
 
+	if (message.secret)
+		message.dateexpired = F.datetime.add('1 day');
+	else
+		message.secret = undefined;
+
 	if (!message.type)
-		message.type = 'forward';
+		message.type = 'message';
 
-	//client.user.lastmessages[client.threadid] = message.id;
+	id && (message.edited = true);
+	client.user.lastmessages[client.threadid] = message.id;
+	
+	F.emit('messenger.message', self, client, message);
+	NOSQL('messages').counter.hit('all').hit(iduser);
 
-	console.log(client);
+	// threadtype = "user" (direct message) or "channel"
+
+	if (client.threadtype === 'user') {
+
+		count = 0;
+
+		is = true;
+
+		// Users can be logged from multiple devices
+		self && self.send(message, function(id, n) {
+
+
+			if (n === client)
+				return false;
+
+			// Target user
+			if (n.threadid === iduser && n.user.id === client.threadid) {
+				++count
+				is = false;
+				n.user.lastmessages[n.threadid] = message.id;
+				return true;
+			}
+
+			// ROBOT
+			if (!client.send && n.threadtype === 'user' && ((n.user.id === message.idto && n.user.threadid === client.threadid) || (n.user.id === client.threadid && n.user.threadid === message.idto))) {
+				is = false;
+				return true;
+			}
+
+			// !client.send (the messages is from "robot")
+			return n.user.id === iduser && n.threadid === client.threadid;
+		});
+
+		if(count > 0) {
+			message.unread = false;
+		}
+
+		if (is) {
+			tmp = F.global.users.findItem('id', client.threadid);
+			if (tmp && (!tmp.mute || !tmp.mute[iduser])) {
+
+				if (tmp.unread[iduser])
+					tmp.unread[iduser]++;
+				else
+					tmp.unread[iduser] = 1;
+
+				tmp.recent[iduser] = true;
+
+				if (tmp.online) {
+					MSG_UNREAD.unread = tmp.unread;
+					MSG_UNREAD.recent = tmp.recent;
+					MSG_UNREAD.lastmessages = tmp.lastmessages;
+					if (self) {
+						tmp = self.find(n => n.user.id === tmp.id);
+						tmp && tmp.send(MSG_UNREAD);
+					}
+				}
+
+				OPERATION('users.save', NOOP);
+			}
+		}
+
+		
+		//client.send && client.send(message);
+
+	} else {
+
+		tmp = {};
+		idchannel = client.threadid;
+
+		
+		var count = 0;
+		self && self.send(message, function (id, m){
+			if (m.threadid === client.threadid && (!message.users || message.users[m.user.id])) {
+				++count;
+			}
+		});
+
+		// Notify users in this channel
+		// self && self.send(message, function(id, m) {
+		// 	count < 2 ? message.unread = true: message.unread = false;
+		// 	if (m.threadid === client.threadid && (!message.users || message.users[m.user.id])) {
+		// 		tmp[m.user.id] = true;
+		// 		m.user.lastmessages[m.threadid] = message.id;
+		// 		return true;
+		// 	}
+		// });
+
+		// Set "unread" for users outside of this channel
+		for (var i = 0, length = F.global.users.length; i < length; i++) {
+			var user = F.global.users[i];
+			if (!tmp[user.id] && (!user.blacklist || !user.blacklist[idchannel]) && (!user.mute || !user.mute[idchannel]) && (!user.channels || user.channels[idchannel]) && (!message.users || message.users[user.id])) {
+				if (user.unread[idchannel])
+					user.unread[idchannel]++;
+				else
+					user.unread[idchannel] = 1;
+			}
+		}
+
+		self && self.all(function(m) {
+			if (m.user.id !== iduser && m.threadid !== client.threadid && (!m.user.blacklist || !m.user.blacklist[client.threadid]) && (!m.user.mute || !m.user.mute[client.threadid]) && (!m.user.channels || m.user.channels[client.threadid]) && (!message.users || message.users[m.user.id])) {
+				MSG_UNREAD.unread = m.user.unread;
+				MSG_UNREAD.lastmessages = m.user.lastmessages;
+				MSG_UNREAD.recent = undefined;
+				m.send(MSG_UNREAD);
+			}
+		});
+
+		OPERATION('users.save', NOOP);
+	}
+
+	// Saves message into the DB
+	var dbname = client.threadtype === 'channel' ? client.threadtype + client.threadid : 'user' + F.global.merge(client.threadid, message.idto || iduser);
+
+	message.type = undefined;
+	message.idowner = client.threadid;
+	message.search = message.body.keywords(true, true).join(' ');
+
+	var db = NOSQL(dbname);
+	var dbBackup = NOSQL(dbname + '-backup');
+
+	if (id) {
+		// Edited
+		tmp = { body: message.body, edited: true, dateupdated: message.datecreated };
+		db.modify(tmp).where('id', id).where('iduser', iduser);
+		!message.secret && dbBackup.modify(tmp).where('id', id).where('iduser', iduser);
+	} else {
+
+		// New
+		if (message.body === ':thumbs-up:')
+			db.meta('likes', (db.meta('likes') || 0) + 1);
+		else
+			db.meta('likes', 0);
+
+		db.insert(message);
+		db.counter.hit('all').hit(client.user.id);
+		!message.secret && dbBackup.insert(message);
+		message.files && message.files.length && NOSQL(dbname + '-files').insert(message);
+		OPERATION('messages.cleaner', dbname, NOOP);
+	}
 };
