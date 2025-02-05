@@ -424,3 +424,61 @@ li.CodeMirror-hint-active { background-color: black; color: white; }
   #component33 .user-item {
 	width: 33%;
   }
+
+
+
+  #component33 .panel {
+    float: none;
+    background: none;
+    box-shadow: none;
+    width: 100%;
+  }
+  #component33 .panel .search {
+    background-color: #F8F8F8;
+  }
+  #component33 .ui-form-container-padding {
+    padding: 0;
+    height: 100%;
+    display: flex;
+  }
+  #component33 .ui-form {
+    min-height: 350px;
+    max-height: 600px;
+    height: 90%;
+    width: 360px;
+    margin: auto;
+  }
+  #component33 .item{
+    padding-left: 0px;
+    padding-right: 0px;
+    width: 100%;
+  }
+  #component33 .user-item{
+    width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  #component33 .padding {
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-right: 0;
+  }
+  #component33 .users.row{
+    margin: 0;
+  }
+  #component33 div[data-title="Пользователи"]{
+    display: flex;
+    flex-direction: column;
+    max-height: 546px;
+    height: 100%;
+  }
+  #component33 .forward-recipients-container{
+    overflow-y: auto;
+    height: 100%;
+  }
+  #component33 .btn-container{
+    padding: 0 20px 20px;
+  }
+  .section::-webkit-scrollbar-thumb {
+    border-radius: 100px;
+  }

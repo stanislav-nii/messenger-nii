@@ -3,39 +3,40 @@
 </head>
 <div data-jc="form" data-title="@(Users)" data-jc-path="common.form" data-if="value === 'users'" data-width="700px"
 	class="hidden">
-	<div><section class="panel">
-		<div data-jc="searchbox" data-jc-path="common.searchUsers" data-enter="false"
-			data-placeholder="@(Type a phrase and press enter)">
-		</div>
-	</section>
-</div>
-	<div class="padding blacklist">
-		<div data-jc="repeater" data-jc-path="current.channels">
-			<script type="text/html">
-				<div class="exec item{{ if visible }} item-visible{{ fi }}" data-id="{{ id }}" threadtype="channel" data-exec="forward_message">{{ name }}</div>
-			</script>
-		</div>
+	<div>
+		<section class="panel">
+			<div data-jc="searchbox" data-jc-path="common.searchUsers" data-enter="false"
+				data-placeholder="@(Type a phrase and press enter)">
+			</div>
+		</section>
 	</div>
-	<div class="padding" data-jc="search" data-jc-path="common.searchUsers" data-selector=".jsearch"
-		id="userscontainer">
-		<div data-jc="lazyload" data-container="#content" data-selector=".jlazyload" data-exec="lazy_picture"
-			data-jc-path="users.items">
-			<div data-jc="repeater-group" data-jc-path="users.items" data-group="department" class="users row">
-				<script type="text/html">
-					<div class="exec user-item col-lg-2 col-md-4 col-xs-6 m jsearch{{ if picture && picture !== 'face' }} jlazyload{{ fi }}" data-search="{{ name }}" data-exec="forward_message" data-id="{{id}}" threadtype="user">
-						<a class="singleline{{ if !me }} jrouting{{ fi }} text-ellipsis"><img src="/photos/face.jpg" data-src="{{ if picture }}/photos/{{ picture }}.jpg{{ else }}/img/face.jpg{{ fi }}" class="mr5 img-lazyload" height="20" />{{ name }}</a>
-						<div class="fs11 mt5 singleline b black">{{ position }}</div>
-						<div class="fs11 singleline"><i class="fa fa-circle mr5 useronline{{ if online }} online{{ fi }}" data-id="{{ id }}"></i></div>
-						<div class="fs11 singleline">{{ if mobile }}<i class="fa fa-mobile mr5"></i>{{ fi }}{{ if notifications }}{{ fi }}@(Logged:) {{ datelogged | time | def('...') }}{{ if blocked }} <b class="red">@((user is blocked))</b>{{ fi }}</div>
-					</div>
-				</script>
-				<script type="text/html">
-					{{ body | raw }}
-				</script>
+	<div class="forward-recipients-container">
+		<div class="padding" data-jc="search" data-jc-path="common.searchUsers" data-selector=".jsearch"
+			id="userscontainer">
+			<div data-jc="lazyload" data-container="#content" data-selector=".jlazyload" data-exec="lazy_picture"
+				data-jc-path="users.items">
+				<div data-jc="repeater" data-jc-path="current.channels">
+					<script type="text/html">
+						<div class="exec jsearch col-lg-2 col-md-4 col-xs-6 m item{{ if visible }} item-visible{{ fi }}" data-id="{{ id }}" data-search="{{ name }}" threadtype="channel" data-exec="forward_message"><i class="fa fa-hashtag"></i>{{ name }}</div>
+					</script>
+				</div>
+				<div data-jc="repeater-group" data-jc-path="users.items" data-group="department" class="users row">
+					<script type="text/html">
+						<div class="{{if me}} hidden {{ fi }} exec user-item col-lg-2 col-md-4 col-xs-6 m jsearch{{ if picture && picture !== 'face' }} jlazyload{{ fi }}" data-search="{{ name }}" data-exec="forward_message" data-id="{{id}}" threadtype="user">
+							<a class="singleline{{ if !me }} jrouting{{ fi }} text-ellipsis"><img src="/photos/face.jpg" data-src="{{ if picture }}/photos/{{ picture }}.jpg{{ else }}/img/face.jpg{{ fi }}" class="mr5 img-lazyload" height="20" />{{ name }}</a>
+							<!-- <div class="fs11 mt5 singleline b black">{{ position }}</div> -->
+							<div class="fs11 singleline"><i class="fa fa-circle mr5 useronline{{ if online }} online{{ fi }}" data-id="{{ id }}"></i> {{ if notifications }}{{ fi }}@(Logged:) {{ datelogged | time | def('...') }}{{ if blocked }} <b class="red">@((user is blocked))</b>{{ fi }}</div>
+							<!-- <div class="fs11 singleline">{{ if mobile }}<i class="fa fa-mobile mr5"></i>{{ fi }}{{ if notifications }}{{ fi }}@(Logged:) {{ datelogged | time | def('...') }}{{ if blocked }} <b class="red">@((user is blocked))</b>{{ fi }}</div> -->
+						</div>
+					</script>
+					<script type="text/html">
+						{{ body | raw }}
+					</script>
+				</div>
 			</div>
 		</div>
 	</div>
-	<div class="padding">
+	<div class="btn-container">
 		<button class="button exec" name="cancel" data-exec="close_users_form">@(Close)</button>
 	</div>
 </div>
@@ -56,6 +57,7 @@
 
 	function users_refresh() {
 		var items = [];
+		var channels = [];
 
 		current.users.forEach(function (item) {
 			if (users.online && !item.online)
@@ -63,25 +65,33 @@
 			items.push(item);
 		});
 
+		current.channels.forEach(function (item) {
+			channels.push(item);
+		});
+
 		SET('users.items', items);
+		SET('current.channels', channels);
 		//SETTER('loading', 'show');
 		//Refresh search
 		//console.log(common);
-		common.searchUsers && setTimeout2('searchusers', function () {
-			$('#userscontainer').component().refresh();
-		}, 100);
+		// common.searchUsers && setTimeout2('searchusers', function () {
+		// 	$('#userscontainer').component().refresh();
+		// }, 100);
+		console.log("after");
+		console.log(current.channels);
+		console.log(users.items);
 		SETTER('loading', 'hide', 1000);
 	}
 
 	function close_users_form() {
+		console.log("current");
+		console.log(current);
 		SET('common.searchUsers', '');
 	}
 
 
 	function forward_message(item) {
 
-
-		console.log("forward_message func");
 		MSG_MESSAGE.type = 'forward';
 		MSG_MESSAGE.id = undefined;
 
@@ -94,13 +104,13 @@
 		MSG_MESSAGE.users && (MSG_MESSAGE.users[user.id] = true);
 
 
-		//EMIT('messenger.send', MSG_MESSAGE);
+		EMIT('messenger.send', MSG_MESSAGE);
 
 		if (MSG_MESSAGE.body) {
 			SETTER('websocket', 'send', MSG_MESSAGE);
 		}
 
-		//MSG_MESSAGE.type = 'message';
+		MSG_MESSAGE.type = 'message';
 	}
 	
 </script>
