@@ -26,12 +26,12 @@ button { outline: 0; }
 .ui-form-animate { transform: translate(0,0); opacity: 1; }
 .ui-form-animate-click { transform: translate(0,0) scale(1.05); }
 .ui-form-padding { padding: 0 30px; }
-.ui-form-title { padding: 15px 20px; font-size: 16px; user-select: none; color: #AAB2BD; background-color: #F8F8F8; font-family: 'Source Sans Pro'; border-bottom: 1px solid #F0F0F0; }
+.ui-form-title { padding: 15px 20px; font-size: 16px; user-select: none; color: #AAB2BD; background-color: #F8F8F8; font-family: 'Roboto'; border-bottom: 1px solid #F0F0F0; }
 .ui-form-title .fa-times { float: right; cursor: pointer; font-size: 18px; margin-top: 4px; }
 .ui-form-title .fa-times:hover { color: black; }
 .ui-form-title .fa-times:active { margin-top: 5px; }
 .ui-form-buttons { padding: 20px; border-top: 5px solid #F0F0F0; background-color: #F8F8F8; }
-.ui-form-buttons button { border: 2px solid #E0E0E0; background-color: white; border-radius: 4px; height: 45px; padding: 0 15px; color: black; margin: 0; cursor: pointer; font-family: Arial; vertical-align: middle; outline: 0; font-size: 14px; text-decoration: none; transition: all 0.3s; }
+.ui-form-buttons button { border: 2px solid #E0E0E0; background-color: white; border-radius: 4px; height: 45px; padding: 0 15px; color: black; margin: 0; cursor: pointer; font-family: 'Roboto'; vertical-align: middle; outline: 0; font-size: 14px; text-decoration: none; transition: all 0.3s; }
 .ui-form-buttons button .fa { width: 16px; }
 .ui-form-buttons button:hover { border-color: silver; }
 .ui-form-buttons button:active { background-color: #D0D0D0; }
@@ -86,7 +86,7 @@ label input { vertical-align: middle; margin-right: 5px; }
 label span { vertical-align: middle; }
 
 .ui-textbox { border: 2px solid #E0E0E0; padding: 5px 2px 5px 5px; border-radius: 2px; position: relative; width: 100%; background-color: white; display: table; }
-.ui-textbox input { display: table-cell; border: 0; outline: 0; font: normal 14px Arial; color: black; width: 100%; background-color: white; padding: 0; }
+.ui-textbox input { display: table-cell; border: 0; outline: 0; font: normal 14px 'Roboto'; color: black; width: 100%; background-color: white; padding: 0; }
 .ui-textbox div { width: 1%; position: relative; vertical-align: middle; display: table-cell; text-align: center; white-space: nowrap; text-overflow: clip; border-left: 1px solid #E0E0E0; width: 30px; color: silver; user-select: none; }
 .ui-textbox-label { margin-bottom: 5px; font-size: 12px; text-align: left; }
 .ui-textbox-label .fa { width: 14px; }
@@ -113,7 +113,7 @@ label span { vertical-align: middle; }
 .ui-dropdown-invalid select { background-color: #FFF3F3 !important; }
 .ui-dropdown select:disabled { background-color: #F0F0F0; cursor: not-allowed; color: gray; }
 
-.button { position: relative; display: inline-block; margin: 0; padding: 0; border: 1px solid #D0D0D0; border-radius: 4px; background-color: white; background: linear-gradient(white,#F0F0F0); padding: 12px 0; font: normal normal 14px Arial; vertical-align: middle; color: gray; width: 100%; }
+.button { position: relative; display: inline-block; margin: 0; padding: 0; border: 1px solid #D0D0D0; border-radius: 4px; background-color: white; background: linear-gradient(white,#F0F0F0); padding: 12px 0; font: normal normal 14px 'Roboto'; vertical-align: middle; color: gray; width: 100%; }
 .button:hover { border-color: silver; }
 .button:active { background: white; color: #A4A4A4; }
 .button:disabled { color: silver; border-color: #E0E0E0; cursor: not-allowed; background: white; }
@@ -167,7 +167,7 @@ label span { vertical-align: middle; }
 .ui-fontawesome li:hover { background-color: #3BAFDA; color: white; }
 .ui-fontawesome-recent .ui-fontawesome-icons ul { height: 215px; }
 .ui-fontawesome-search { border-bottom: 1px solid #E0E0E0; height: 34px; }
-.ui-fontawesome-search input { width: 100%; outline: 0; background-color: white; font: normal normal 12px Arial; border: 0; margin: 0; padding: 0; }
+.ui-fontawesome-search input { width: 100%; outline: 0; background-color: white; font: normal normal 12px 'Roboto'; border: 0; margin: 0; padding: 0; }
 .ui-fontawesome-search span { float: left; width: 30px; text-align: center; height: 30px; padding: 8px 0 0 0; font-size: 12px; color: #A0A0A0; }
 .ui-fontawesome-search .fa-times { color: red; cursor: pointer; }
 .ui-fontawesome-search div { margin-left: 30px; padding: 6px 10px 0 0; }

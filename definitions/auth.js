@@ -1,6 +1,11 @@
-const SESSION = {};
+//const SESSION = {};
+
+//const fs = require("fs");
+// const SESSION = JSON.parse(fs.readFileSync("session.json"));
 
 F.onAuthorize = function(req, res, flags, next) {
+
+	//fs.writeFileSync("session.json", JSON.stringify(SESSION));
 
 	var cookie = req.cookie(F.config.cookie);
 	if (!cookie)

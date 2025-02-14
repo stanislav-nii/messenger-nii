@@ -357,6 +357,10 @@ F.global.sendmessage = function(client, message) {
 };
 
 F.global.forward = function (client, message) {
+
+	client.user.recent[client.threadid] = true;
+	OPERATION('users.save', NOOP);
+	
 	message.type = "message";
 	if (!client.threadid || !client.threadtype)
 		return;
@@ -399,9 +403,9 @@ F.global.forward = function (client, message) {
 		self && self.send(message, function(id, n) {
 
 
-			var CircularJSON = require('circular-json');
-			var str = CircularJSON.stringify(n);
-			console.log(str);
+			//var CircularJSON = require('circular-json');
+			//var str = CircularJSON.stringify(n);
+			//console.log(str);
 			if (n === client)
 				return false;
 
@@ -472,13 +476,12 @@ F.global.forward = function (client, message) {
 	
 		// Notify users in this channel
 		self && self.send(message, function(id, m) {
-			var CircularJSON = require('circular-json');
-			var str = CircularJSON.stringify(client);
+			//var CircularJSON = require('circular-json');
+			//var str = CircularJSON.stringify(client);
 			//console.log(str);
 
 			count < 2 ? message.unread = true: message.unread = false;
 			if (m.threadid === client.threadid && (!message.users || message.users[m.user.id]) && m.req.user !== client.req.user) {
-				console.log("cycle");
 				tmp[m.user.id] = true;
 				m.user.lastmessages[m.threadid] = message.id;
 				return true;
@@ -506,6 +509,7 @@ F.global.forward = function (client, message) {
 		});
 
 		OPERATION('users.save', NOOP);
+
 
 		// tmp = {};
 		// idchannel = client.threadid;

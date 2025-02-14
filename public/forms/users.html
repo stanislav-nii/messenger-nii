@@ -1,8 +1,8 @@
 <head>
-	<link rel="stylesheet" href="../../css/users-list.css" />
+	<link rel="stylesheet" href="../../css/default.css" />
 </head>
 <div data-jc="form" data-title="@(Users)" data-jc-path="common.form" data-if="value === 'users'" data-width="700px"
-	class="hidden">
+	class="hidden forward-form">
 	<div>
 		<section class="panel">
 			<div data-jc="searchbox" data-jc-path="common.searchUsers" data-enter="false"
@@ -17,16 +17,20 @@
 				data-jc-path="users.items">
 				<div data-jc="repeater" data-jc-path="current.channels">
 					<script type="text/html">
-						<div class="exec jsearch col-lg-2 col-md-4 col-xs-6 m item{{ if visible }} item-visible{{ fi }}" data-id="{{ id }}" data-search="{{ name }}" threadtype="channel" data-exec="forward_message"><i class="fa fa-hashtag"></i>{{ name }}</div>
+						<!-- <div class="exec hover jsearch col-lg-2 col-md-4 col-xs-6 m item{{ if visible }} item-visible{{ fi }}" data-id="{{ id }}" data-search="{{ name }}" threadtype="channel" data-exec="forward_message"><i class="fa fa-hashtag"></i>{{ name }}</div> -->
+						<div class="exec hover jsearch col-lg-2 col-md-4 col-xs-6 m item{{ if visible }} item-visible{{ fi }}" data-id="{{ id }}" data-search="{{ name }}" threadtype="channel" data-exec="forward_message"><img src="/photos/logo.png" data-src="/photos/logo.png" class="mr5 img-lazyload" height="30" width="30"/>{{ name }}</div>
 					</script>
 				</div>
 				<div data-jc="repeater-group" data-jc-path="users.items" data-group="department" class="users row">
+					<!-- <div data-jc="repeater-group" data-jc-path="users.items" class="users row"></div> -->
 					<script type="text/html">
-						<div class="{{if me}} hidden {{ fi }} exec user-item col-lg-2 col-md-4 col-xs-6 m jsearch{{ if picture && picture !== 'face' }} jlazyload{{ fi }}" data-search="{{ name }}" data-exec="forward_message" data-id="{{id}}" threadtype="user">
-							<a class="singleline{{ if !me }} jrouting{{ fi }} text-ellipsis"><img src="/photos/face.jpg" data-src="{{ if picture }}/photos/{{ picture }}.jpg{{ else }}/img/face.jpg{{ fi }}" class="mr5 img-lazyload" height="20" />{{ name }}</a>
-							<!-- <div class="fs11 mt5 singleline b black">{{ position }}</div> -->
-							<div class="fs11 singleline"><i class="fa fa-circle mr5 useronline{{ if online }} online{{ fi }}" data-id="{{ id }}"></i> {{ if notifications }}{{ fi }}@(Logged:) {{ datelogged | time | def('...') }}{{ if blocked }} <b class="red">@((user is blocked))</b>{{ fi }}</div>
-							<!-- <div class="fs11 singleline">{{ if mobile }}<i class="fa fa-mobile mr5"></i>{{ fi }}{{ if notifications }}{{ fi }}@(Logged:) {{ datelogged | time | def('...') }}{{ if blocked }} <b class="red">@((user is blocked))</b>{{ fi }}</div> -->
+						<div class="{{if me}}hidden{{fi}}">
+							<div class="exec hover user-item col-lg-2 col-md-4 col-xs-6 m jsearch{{ if picture && picture !== 'face' }} jlazyload{{ fi }}" data-search="{{ name }}" data-exec="forward_message" data-id="{{id}}" threadtype="user">
+								<a class="singleline{{ if !me }} jrouting{{ fi }} text-ellipsis"><img src="/photos/face.png" data-src="{{ if picture }}/photos/{{ picture }}.jpg{{ else }}/img/face.png{{ fi }}" class="mr5 img-lazyload" height="30" width="30"/>{{ name }}</a>
+								<!-- <div class="fs11 mt5 singleline b black">{{ position }}</div> -->
+								<div class="fs11 singleline"><i class="fa fa-circle mr5 useronline{{ if online }} online{{ fi }}" data-id="{{ id }}"></i> {{ if notifications }}{{ fi }}@(Logged:) {{ datelogged | time | def('...') }}{{ if blocked }} <b class="red">@((user is blocked))</b>{{ fi }}</div>
+								<!-- <div class="fs11 singleline">{{ if mobile }}<i class="fa fa-mobile mr5"></i>{{ fi }}{{ if notifications }}{{ fi }}@(Logged:) {{ datelogged | time | def('...') }}{{ if blocked }} <b class="red">@((user is blocked))</b>{{ fi }}</div> -->
+							</div>
 						</div>
 					</script>
 					<script type="text/html">
@@ -56,11 +60,12 @@
 	}
 
 	function users_refresh() {
+		//console.log(users);
 		var items = [];
 		var channels = [];
 
 		current.users.forEach(function (item) {
-			if (users.online && !item.online)
+			if ((users.online && !item.online))
 				return;
 			items.push(item);
 		});
@@ -71,22 +76,23 @@
 
 		SET('users.items', items);
 		SET('current.channels', channels);
-		//SETTER('loading', 'show');
-		//Refresh search
-		//console.log(common);
+		//$('#userscontainer').component().refresh();
 		// common.searchUsers && setTimeout2('searchusers', function () {
 		// 	$('#userscontainer').component().refresh();
 		// }, 100);
-		console.log("after");
-		console.log(current.channels);
-		console.log(users.items);
 		SETTER('loading', 'hide', 1000);
 	}
 
 	function close_users_form() {
-		console.log("current");
-		console.log(current);
 		SET('common.searchUsers', '');
+		users_reload();
+		var users = document.getElementsByClassName("user-item");
+		var channels = document.getElementsByClassName("item");
+		var items = Array.from(channels).concat(Array.from(users));
+		items.forEach(item => {
+			item.classList.add("exec", "hover");
+			item.classList.remove("forward-complete");
+		});
 	}
 
 
@@ -111,6 +117,26 @@
 		}
 
 		MSG_MESSAGE.type = 'message';
+
+		forward_complete(item);
+	}
+
+	function forward_complete(item){
+		var user_div = item[0];
+		var user_id = user_div.getAttribute("data-id");
+
+		user_div.classList.remove("exec", "hover");
+		user_div.classList.add("forward-complete");
+
+		var recent = current.recent;
+		var recipient = users.items.find(user_item => user_item.id === user_id);
+
+		if(!recent.includes(recipient)){
+			user.recent[user_id] = true;
+			recent.push(recipient);
+			recent.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+			SET('current.recent', recent);
+		}
 	}
 	
 </script>

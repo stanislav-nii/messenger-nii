@@ -663,11 +663,17 @@ COMPONENT('form', function() {
 
 	self.make = function() {
 		var width = self.attr('data-width') || '800px';
-		var enter = self.attr('data-enter');
+		var enter = self.attr('data-width');
 		autocenter = self.attr('data-autocenter') === 'true';
 		self.condition = self.attr('data-if');
+		var form_class = self.condition.match(/'([^']+)'/);
+		if(form_class){
+			if(form_class.length > 1){
+				form_class = form_class[1]
+			}
+		}
 
-		$(document.body).append('<div id="{0}" class="hidden ui-form-container"><div class="ui-form-container-padding"><div class="ui-form" style="max-width:{1}"><div class="ui-form-title"><span class="fa fa-times ui-form-button-close" data-path="{2}"></span>{3}</div>{4}</div></div>'.format(self._id, width, self.path, self.attr('data-title')));
+		$(document.body).append('<div id="{0}" class="hidden ui-form-container {5}"><div class="ui-form-container-padding"><div class="ui-form" style="max-width:{1}"><div class="ui-form-title"><span class="fa fa-times ui-form-button-close" data-path="{2}"></span>{3}</div>{4}</div></div>'.format(self._id, width, self.path, self.attr('data-title'), "", form_class));
 
 		var el = $('#' + self._id);
 		el.find('.ui-form').get(0).appendChild(self.element.get(0));

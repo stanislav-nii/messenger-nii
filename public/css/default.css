@@ -1,12 +1,13 @@
 /*auto*/
 
 $font    : 'Source Sans Pro';
+$font    : 'Roboto';
 
 html { overflow: hidden; }
 html,body { margin: 0; height: 100%; position: relative; }
-body { background-color: #f6f6f6; padding: 0; color: gray; font-smoothing: antialiased; overflow: none; overflow-scrolling: touch; font-family: Arial; font-size: 14px; }
+body { background-color: #f6f6f6; padding: 0; color: #777; font-smoothing: antialiased; overflow: none; overflow-scrolling: touch; font-family: 'Roboto'; font-size: 14px; }
 
-.body { height: 100%; margin-left: 220px; overflow: hidden; }
+.body { height: 100%; margin-left: 220px; overflow: hidden; font-family: 'Roboto';}
 
 .padding { padding: 20px; }
 .center { text-align: center; }
@@ -47,7 +48,7 @@ body { background-color: #f6f6f6; padding: 0; color: gray; font-smoothing: antia
 #panel .caption:first-child { margin-top: 0; }
 
 .mainmenu { position: absolute; }
-.monospace { font-family: Menlo, Monaco, monospace; }
+.monospace { font-family: Menlo, Monaco, monospace;}
 
 .caption { font-size: 12px; font-weight: bold; color: silver; text-transform: uppercase; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .caption .operation { float: right; margin: -3px 0 0 7px; font-size: 14px; cursor: pointer; opacity: .4; font-size: 15px; }
@@ -93,7 +94,7 @@ body { background-color: #f6f6f6; padding: 0; color: gray; font-smoothing: antia
 
 .panel nav a { display: block; padding: 1px 0 1px 20px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-right: 15px; border-radius: 0 4px 4px 0; margin-bottom: 2px; }
 .panel nav a:hover { text-decoration: none; }
-.panel nav .fa { width: 16px; opacity: 0.5; font-size: 11px; float: left; margin: 5px 0 0 0; }
+.panel nav .fa { width: 16px; opacity: 1; font-size: 11px; float: left; margin: 5px 0 0 0; }
 .panel nav .selected {}
 .panel nav .highlight { font-weight: bold; }
 .panel nav .fa-heart { opacity: 1; }
@@ -119,7 +120,7 @@ body { background-color: #f6f6f6; padding: 0; color: gray; font-smoothing: antia
 .panel .search { background-color: white; color: #A0A0A0; border-radius: 4px; margin: 10px 20px 20px; padding: 2px; overflow: hidden; color: gray; }
 .panel .search span { float: left; width: 30px; font-size: 12px; border-right: 1px solid #D0D0D0; text-align: center; height: 22px; padding: 3px 0 0 0; }
 .panel .search div { margin-left: 30px; padding: 0 10px; height: 22px; }
-.panel .search input { background: transparent; border: 0; padding: 0; margin: 0; font-family: Arial; font-size: 12px; outline: 0; width: 100%; color: black; }
+.panel .search input { background: transparent; border: 0; padding: 0; margin: 0; font-family: 'Roboto'; font-size: 12px; outline: 0; width: 100%; color: black; }
 
 .theme-dark .panel { background: #303030 linear-gradient(-90deg,#303030,#252525); box-shadow: inset -10px 0 10px rgba(0,0,0,0.3), 5px 0 10px rgba(0,0,0,0.1); }
 .theme-dark .panel hr { border-color: #404040; }
@@ -191,7 +192,7 @@ body { background-color: #f6f6f6; padding: 0; color: gray; font-smoothing: antia
 #header .search { background-color: white; border-radius: 4px; margin: 12px 0 0; padding: 2px; overflow: hidden; color: gray; border: 1px solid #E0E0E0; margin-right: 45px; }
 #header .search span { float: left; width: 40px; font-size: 14px; border-right: 1px solid #E0E0E0; text-align: center; height: 28px; padding: 6px 0 0 0; }
 #header .search div { margin-left: 40px; padding: 6px 10px 0; height: 28px; }
-#header .search input { background: transparent; border: 0; padding: 0; margin: 0; font-family: Arial; font-size: 14px; color: black; outline: 0; width: 100%; }
+#header .search input { background: transparent; border: 0; padding: 0; margin: 0; font-family: 'Roboto'; font-size: 14px; color: black; outline: 0; width: 100%; }
 #header p { font-size: 12px; margin: 0; padding: 0; line-height: 14px; }
 #header { line-height: 10px; }
 #header .header-button { float: right; width: 34px; text-align: center; margin: 12px 0 0 10px; }
@@ -219,10 +220,10 @@ h3 { font: normal bold 18px $font; margin: 0 0 20px; padding: 0; color: black; }
 .online { color: #92E464 !important; }
 .offline { color: #D63B32 !important; }
 
-.markdown { font-size: 18px; line-height: 22px; font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, sans-serif; color: #404040; }
-.markdown h1 { margin: 0 0 20px; font-size: 30px; padding: 0 0 13px; border-bottom: 1px solid #E0E0E0; color: black; line-height: 38px; font-family: Arial, sans-serif; }
-.markdown h2 { margin: 30px 0 18px; font-weight: bold; font-size: 25px; padding: 0 0 8px; border-bottom: 1px solid #E0E0E0; color: black; line-height: 28px; font-family: Arial, sans-serif; }
-.markdown h3 { margin: 20px 0 10px; font-size: 20px; padding: 0 0 5px; color: black; font-weight: bold; color: black; line-height: 22px; font-family: Arial, sans-serif; }
+.markdown { font-size: 18px; line-height: 22px; font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', 'Roboto', sans-serif; color: #404040; }
+.markdown h1 { margin: 0 0 20px; font-size: 30px; padding: 0 0 13px; border-bottom: 1px solid #E0E0E0; color: black; line-height: 38px; font-family: 'Roboto', sans-serif; }
+.markdown h2 { margin: 30px 0 18px; font-weight: bold; font-size: 25px; padding: 0 0 8px; border-bottom: 1px solid #E0E0E0; color: black; line-height: 28px; font-family: 'Roboto', sans-serif; }
+.markdown h3 { margin: 20px 0 10px; font-size: 20px; padding: 0 0 5px; color: black; font-weight: bold; color: black; line-height: 22px; font-family: 'Roboto', sans-serif; }
 .markdown .h1 { margin: 0 0 20px; font-size: 24px; padding: 0 0 15px; border-bottom: 1px solid #E0E0E0; color: black; }
 .markdown .h2 { margin: 10px 0 18px; font-size: 20px; padding: 0 0 10px; border-bottom: 1px solid #E0E0E0; color: black; }
 .markdown .h3 { margin: 0 0 5px; font-size: 16px; padding: 0 0 5px; color: black; }
@@ -387,7 +388,7 @@ h3 { font: normal bold 18px $font; margin: 0 0 20px; padding: 0; color: black; }
 .blacklist .item-visible .fa:before { content: '\f06e'; }
 .blacklist .item-visible { font-weight: bold; background-color: #68B25B; }
 
-.CodeMirror-hints { position: absolute; z-index: 10; overflow: hidden; list-style: none; margin: 0; padding: 5px; box-shadow: 2px 3px 10px rgba(0,0,0,.1); border-radius: 3px; border: 1px solid #E0E0E0; background: white; font-size: 14px; font-family: Arial; max-height: 20em; overflow-y: auto; width: 100%; max-width: 200px; }
+.CodeMirror-hints { position: absolute; z-index: 10; overflow: hidden; list-style: none; margin: 0; padding: 5px; box-shadow: 2px 3px 10px rgba(0,0,0,.1); border-radius: 3px; border: 1px solid #E0E0E0; background: white; font-size: 14px; font-family: 'Roboto'; max-height: 20em; overflow-y: auto; width: 100%; max-width: 200px; }
 .CodeMirror-hint { margin: 0; padding: 0 4px; border-radius: 2px; white-space: pre; color: black; cursor: pointer; }
 li.CodeMirror-hint-active { background-color: black; color: white; }
 
@@ -421,64 +422,86 @@ li.CodeMirror-hint-active { background-color: black; color: white; }
 	margin-left: -17px;
   }
 
-  #component33 .user-item {
-	width: 33%;
-  }
-
-
-
-  #component33 .panel {
+  .users .panel {
     float: none;
     background: none;
     box-shadow: none;
     width: 100%;
   }
-  #component33 .panel .search {
+  .users .panel .search{
     background-color: #F8F8F8;
   }
-  #component33 .ui-form-container-padding {
+  .users .ui-form-container-padding {
     padding: 0;
     height: 100%;
     display: flex;
   }
-  #component33 .ui-form {
+  .users .ui-form {
     min-height: 350px;
     max-height: 600px;
     height: 90%;
     width: 360px;
     margin: auto;
   }
-  #component33 .item{
+  .users .item {
     padding-left: 0px;
     padding-right: 0px;
+    padding-top: 8px;
+    padding-bottom: 8px;
     width: 100%;
+    max-width: 320px;
+    border-radius: 5px;
+    margin-bottom: 5px;
   }
-  #component33 .user-item{
+  .users .user-item {
     width: 100%;
+    max-width: 320px;
     padding-left: 0;
     padding-right: 0;
+    border-radius: 5px;
+    margin-bottom: 5px;
   }
-  #component33 .padding {
+  .users .hover:hover {
+    background-color: #008ec917;
+  }
+  .users .padding {
     padding-top: 0;
     padding-bottom: 0;
     padding-right: 0;
   }
-  #component33 .users.row{
+  .users .users.row {
     margin: 0;
   }
-  #component33 div[data-title="Пользователи"]{
+  .users div[data-title="Пользователи"]{
     display: flex;
     flex-direction: column;
     max-height: 546px;
     height: 100%;
   }
-  #component33 .forward-recipients-container{
+  .users .forward-recipients-container{
     overflow-y: auto;
     height: 100%;
   }
-  #component33 .btn-container{
+  .users .btn-container{
     padding: 0 20px 20px;
   }
-  .section::-webkit-scrollbar-thumb {
-    border-radius: 100px;
+
+  .forward-recipients-container::-webkit-scrollbar{
+	  width: 20px;
+  }
+
+  .forward-recipients-container::-webkit-scrollbar-thumb{
+    background-color: #A0A0A0;
+    border: 6px solid rgba(0, 0, 0, 0);
+    border-radius: 40px;
+    background-clip: padding-box;
+  }
+
+  .forward-complete {
+    background-color: rgba(199, 230, 255);
+    transition: background-color 1s cubic-bezier(0.42, 0, 0, 1)
+  }
+
+  .users .ui-form-button-close {
+    display: none;
   }
