@@ -443,24 +443,25 @@ li.CodeMirror-hint-active { background-color: black; color: white; }
     width: 360px;
     margin: auto;
   }
-  .users .item {
+
+  .users .item, .users .user-item {
     padding-left: 0px;
     padding-right: 0px;
+    width: 100%;
+    max-width: 320px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    background: linear-gradient(to right, rgba(199, 230, 255) 50%, rgba(199, 230, 255, 0) 50%);
+    background-size: 200% 100%;
+    background-position: right bottom;
+    transition: all .5s ease-out;
+  }
+  
+  .users .item {
     padding-top: 8px;
     padding-bottom: 8px;
-    width: 100%;
-    max-width: 320px;
-    border-radius: 5px;
-    margin-bottom: 5px;
   }
-  .users .user-item {
-    width: 100%;
-    max-width: 320px;
-    padding-left: 0;
-    padding-right: 0;
-    border-radius: 5px;
-    margin-bottom: 5px;
-  }
+
   .users .hover:hover {
     background-color: #008ec917;
   }
@@ -498,8 +499,9 @@ li.CodeMirror-hint-active { background-color: black; color: white; }
   }
 
   .forward-complete {
-    background-color: rgba(199, 230, 255);
-    transition: background-color 1s cubic-bezier(0.42, 0, 0, 1)
+    /* background-color: rgba(199, 230, 255); */
+    /* transition: background-color 1s cubic-bezier(0.42, 0, 0, 1) */
+    background-position: left bottom !important;
   }
 
   .users .ui-form-button-close {

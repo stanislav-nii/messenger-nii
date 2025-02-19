@@ -122,17 +122,27 @@
 	}
 
 	function forward_complete(item){
-		var user_div = item[0];
-		var user_id = user_div.getAttribute("data-id");
+		var item_div = item[0];
+		var item_id = item_div.getAttribute("data-id");
 
-		user_div.classList.remove("exec", "hover");
-		user_div.classList.add("forward-complete");
+		item_div.classList.remove("exec", "hover");
+		item_div.classList.add("forward-complete");
+
+		if(item[0].getAttribute("threadtype") === "channel")
+			return;
 
 		var recent = current.recent;
-		var recipient = users.items.find(user_item => user_item.id === user_id);
+		var recipient = users.items.find(user_item => user_item.id === item_id);
 
-		if(!recent.includes(recipient)){
-			user.recent[user_id] = true;
+		// if(!recent.includes(recipient) recent.some(user_item => user_item.id === recipient.id)){
+		// 	user.recent[item_id] = true;
+		// 	recent.push(recipient);
+		// 	recent.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+		// 	SET('current.recent', recent);
+		// }
+
+		if(!recent.some(user_item => user_item.id === recipient.id)){
+			user.recent[item_id] = true;
 			recent.push(recipient);
 			recent.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
 			SET('current.recent', recent);
