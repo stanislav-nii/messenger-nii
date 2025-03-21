@@ -56,9 +56,9 @@ body { background-color: #f6f6f6; padding: 0; color: #777; font-smoothing: antia
 .caption .operation:hover { opacity: 1; }
 
 .chat { padding-bottom: 10px; }
-.chat figure { border-bottom: 1px dashed #D0D0D0; padding: 10px 20px 0; }
+.chat figure { /*border-bottom: 1px dashed #D0D0D0;*/ padding: 10px 20px 0;  }
 .chat figure:last-child { border-bottom: 0; }
-.chat > div { text-align: center; font-size: 11px; margin-bottom: 20px; }
+.chat > div { text-align: center; font-size: 11px; margin-bottom: 20px; margin-top: 10px; }
 .chat > div > div { position: relative; display: inline-block; margin-top: 0; padding: 8px 20px; border-radius: 0 0 4px 4px; background-color: #E0E0E0; }
 .chat-picture { float: left; width: 31px; }
 .chat-picture img { border-radius: 4px; }
@@ -422,6 +422,10 @@ li.CodeMirror-hint-active { background-color: black; color: white; }
 	margin-left: -17px;
   }
 
+  .markdown .img-responsive:hover {
+    cursor: pointer;
+  }
+
   .users .panel {
     float: none;
     background: none;
@@ -506,4 +510,25 @@ li.CodeMirror-hint-active { background-color: black; color: white; }
 
   .users .ui-form-button-close {
     display: none;
+  }
+
+  .chat > .messages-date > div {
+    background-color: #fff;
+    color: #505050;
+    padding: 3px 16px;
+    border-radius: 15px;
+    border: 1px solid #efefef;
+  }
+
+  span.datetime {
+    height: 0;
+    font-size: 10px;
+    position: relative;
+    top: -5px;
+    user-select: none;
+    color: #808080;
+  }
+
+  .me span.datetime {
+    color: #3f91b1;
   }

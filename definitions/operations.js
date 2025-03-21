@@ -138,7 +138,7 @@ NEWOPERATION('send', function(error, value, callback) {
 	// value.target = 'channel' or 'user';
 	// value.body = 'MESSAGE in MARKDOWN';
 	// value.users = [Array of ID users]; (OPTIONAL)
-	// value.files = [{ name: String, url: String }]; (OPTIONAL)
+	// value.files = [{ name: String, url: String, checksum: String }]; (OPTIONAL)
 	// value.idto = IDUSER; (OPTIONAL, can rewrite a private database between two users. Only for robots)
 	// value.secret = Boolean;
 

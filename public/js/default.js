@@ -1,6 +1,3 @@
-// var fancybox = import("@fancyapps/ui");
-// var fancyboxcss = import("@fancyapps/ui/dist/fancybox/fancybox.css");
-
 var MARKDOWN = {};
 var REGEXP = {};
 
@@ -77,10 +74,7 @@ Tangular.register('markdown', function(value) {
 
 	MARKDOWN.html = marked(marked_features(xss.body)).replace(REGEXP.smiles, function(text) {
 		return text.replace(REGEXP.l, '<').replace(REGEXP.g, '>').replace(REGEXP.quotes, '"');
-	}).replace(/<img/g, `<a data-fancybox data-caption=${file_caption} data-src=${file_url} ><img class="img-responsive"').replace(REGEXP.table, '<table class="table table-bordered"`).replace(/<a\s/g, '<a target="_blank"');
-
-
-	
+	}).replace(/<img/g, `<a data-fancybox data-caption=${file_caption} data-src=${file_url} ><img class="img-responsive"`).replace(/<a\s/g, '<a target="_blank"');
 
 	if (!MARKDOWN.html.replace(REGEXP.tag, '').trim())
 		MARKDOWN.html = MARKDOWN.html.replace(REGEXP.fa, '"fa fa-2x ');

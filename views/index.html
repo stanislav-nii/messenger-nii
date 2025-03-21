@@ -27,8 +27,8 @@
 	<script src="//cdnjs.cloudflare.com/ajax/libs/marked/0.3.6/marked.min.js"></script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/favico.js/0.3.10/favico.min.js"></script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.3/FileSaver.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" />
+	<script src="/js/fancybox.umd.js"></script>
+	<link rel="stylesheet" href="/css/fancybox.css" />
 
 	@{import('meta', 'default.css', 'default.js', 'favicon.ico', 'head')}
 </head>
@@ -204,6 +204,10 @@
 					<i class="fs15 fa fa-share"></i>
 					<span>Переслать</span>
 				</li>
+				<li class="item save">
+					<i class="fs15 fa fa-download"></i>
+					<span>Сохранить как...</span>
+				</li>
 				<li class="item delete">
 					<i class="fs15 red fa fa-trash"></i>
 					<span>Удалить</span>
@@ -336,7 +340,7 @@
 				} else {
 					leftPos = `${x - contextMenuWidth}px`;
 				}
-				
+
 				messageElement = document.elementFromPoint(x, y).closest('.chat-message');
 
 				if (messageElement.classList.contains("me")) {
@@ -345,6 +349,14 @@
 				else {
 					contextMenu.getElementsByClassName("delete")[0].classList.add("hidden");
 				}
+
+				if(messageElement.querySelector(".chat-body img")){
+					contextMenu.getElementsByClassName("save")[0].classList.remove("hidden");
+				}
+				else {
+					contextMenu.getElementsByClassName("save")[0].classList.add("hidden");
+				}
+
 				contextMenu.style.left = leftPos;
 				contextMenu.style.top = `${y}px`;
 				contextMenu.style.display = "block";
@@ -361,6 +373,22 @@
 			AJAX('GET /api/message/{0}/'.format(messageId), function (response) {
 				SET('common.forward', response[0].body);
 				SET('common.form', 'users');
+			});
+		});
+
+		document.getElementsByClassName("item save")[0].addEventListener("click", e => {
+			e.preventDefault();
+			const messageId = messageElement.getAttribute("data-id");
+			AJAX('GET /api/message/{0}/'.format(messageId), function (response) {
+				const msg_body = response[0].body;
+				const img_syntax = msg_body.match(/!\[.*\]\(\/download.*\)/gm)[0];
+				const img_caption = img_syntax.match(/\[(.*)\]/)[1];
+				const img_link = img_syntax.match(/\((.*)\)/)[1];
+				fetch(img_link).then(response => {
+					return response.blob();
+				}).then( blob => {
+					saveAs(blob, img_caption);
+				});
 			});
 		});
 
@@ -641,9 +669,9 @@
 						var file = data[i];
 
 						if (file.width && file.height)
-							push.push('![' + file.filename + '](' + file.url + ')');
+							push.push('![' + file.filename + '](' + file.url + ')'/*['+ file.checksum +']'*/);
 						else
-							push.push('[' + file.filename + '](' + file.url + ')');
+							push.push('[' + file.filename + '](' + file.url + ')'/*['+ file.checksum +']'*/);
 					}
 
 
@@ -671,6 +699,7 @@
 
 			$('.datetime').each(function () {
 				var el = $(this);
+				console.log(Tangular.helpers.time(el.attr('data-value')));
 				el.html(Tangular.helpers.time(el.attr('data-value')));
 			});
 
@@ -926,43 +955,67 @@
 			return @('in ' + days + ' ' + Tangular.helpers.pluralize(days, 'days', 'day', 'days', 'days') + ' ago');
 		});
 
-		Tangular.register('time', function (value) {
+		// Tangular.register('time', function (value) {
 
-			if (!value)
-				return;
+		// 	if (!value)
+		// 		return;
 
-			var diff = Date.now() - value.parseDate().getTime();
-			var minutes = ((diff / 1000) / 60) >> 0;
+		// 	var diff = Date.now() - value.parseDate().getTime();
+		// 	var minutes = ((diff / 1000) / 60) >> 0;
 
-			if (minutes < 60) {
-				if (minutes < 3)
-					return '@(now)';
-				return @(minutes + ' minutes ago');
-			}
+		// 	if (minutes < 60) {
+		// 		if (minutes < 3)
+		// 			return '@(now)';
+		// 		return @(minutes + ' minutes ago');
+		// 	}
 
-			var hours = (minutes / 60) >> 0;
-			if (hours < 24)
-				return @(hours + ' ' + Tangular.helpers.pluralize(hours, 'hours', 'hour', 'hours', 'hours') + ' ago');
+		// 	var hours = (minutes / 60) >> 0;
+		// 	if (hours < 24)
+		// 		return @(hours + ' ' + Tangular.helpers.pluralize(hours, 'hours', 'hour', 'hours', 'hours') + ' ago');
 
-			var days = (hours / 24) >> 0;
-			if (days < 30)
-				return @(days + ' ' + Tangular.helpers.pluralize(days, 'days', 'day', 'days', 'days') + ' ago');
+		// 	var days = (hours / 24) >> 0;
+		// 	if (days < 30)
+		// 		return @(days + ' ' + Tangular.helpers.pluralize(days, 'days', 'day', 'days', 'days') + ' ago');
 
-			var months = (days / 29) >> 0;
-			if (months < 12)
-				return @(months + ' ' + Tangular.helpers.pluralize(months, 'months', 'month', 'months', 'months') + ' ago');
+		// 	var months = (days / 29) >> 0;
+		// 	if (months < 12)
+		// 		return @(months + ' ' + Tangular.helpers.pluralize(months, 'months', 'month', 'months', 'months') + ' ago');
 
-			var years = (months / 12) >> 0;
-			return @(years + ' ' + Tangular.helpers.pluralize(years, 'years', 'year', 'years', 'years') + ' ago');
-		});
+		// 	var years = (months / 12) >> 0;
+		// 	return @(years + ' ' + Tangular.helpers.pluralize(years, 'years', 'year', 'years', 'years') + ' ago');
+		// });
 
 		Tangular.register('month', function (value) {
 			return [@('january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december')][value - 1];
 		});
 
+
 		Fancybox.bind('[data-fancybox]', {
 			//
+			Toolbar: {
+				display: {
+					right: ['download', 'toggleZoom', 'close'],
+				}
+			}
 		}); 
+
+		Fancybox.defaults.l10n = {
+			CLOSE: "Закрыть",
+			NEXT: "Следующий",
+			PREV: "Предыдущий",
+			MODAL: "Вы можете закрыть окно нажатием ESC",
+			ERROR: "Ошибка, попробуйте повторить попытку",
+			IMAGE_ERROR: "Изображение не найдено",
+			ELEMENT_NOT_FOUND: "HTML элемент не найден",
+			AJAX_NOT_FOUND: "Ошибка загрузки AJAX: Не найдено",
+			AJAX_FORBIDDEN: "Ошибка загрузки AJAX: Запрещено",
+			IFRAME_ERROR: "Ошибка при загрузке фрейма",
+			TOGGLE_ZOOM: "Приблизить",
+			TOGGLE_THUMBS: "Миниатюры",
+			TOGGLE_SLIDESHOW: "Слайдшоу",
+			TOGGLE_FULLSCREEN: "Полноэкранный режим",
+			DOWNLOAD: "Загрузить"
+		}
 	</script>
 
 </body>
