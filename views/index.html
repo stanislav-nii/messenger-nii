@@ -200,6 +200,10 @@
 	<div class="wrapper-context-menu" style="display:none">
 		<div class="content">
 			<ul class="menu">
+				<li class="item copy">
+					<i class="fs-15 fa fa-copy"></i>
+					<span>Копировать</span>
+				</li>
 				<li class="item forward">
 					<i class="fs15 fa fa-share"></i>
 					<span>Переслать</span>
@@ -311,7 +315,7 @@
 
 
 
-	<input type="file" id="uploadfile" class="hidden" />
+	<input type="file" id="uploadfile" class="hidden" multiple/>
 
 	@{json(user, 'userdata', (k, v) => k !== 'password' ? v : undefined)}
 
@@ -322,6 +326,8 @@
 		const contextMenu = document.querySelector(".wrapper-context-menu");
 
 		var messageElement;
+		var imageElement;
+		var selection;
 
 		document.addEventListener("contextmenu", e => {
 			e.preventDefault();
@@ -342,6 +348,9 @@
 				}
 
 				messageElement = document.elementFromPoint(x, y).closest('.chat-message');
+				imageElement = document.elementFromPoint(x, y).closest('img.img-responsive');
+				textElement = messageElement.closest('p');
+				console.log(textElement);
 
 				if (messageElement.classList.contains("me")) {
 					contextMenu.getElementsByClassName("delete")[0].classList.remove("hidden");
@@ -350,7 +359,7 @@
 					contextMenu.getElementsByClassName("delete")[0].classList.add("hidden");
 				}
 
-				if(messageElement.querySelector(".chat-body img")){
+				if(messageElement.querySelector(".chat-body img") && imageElement){
 					contextMenu.getElementsByClassName("save")[0].classList.remove("hidden");
 				}
 				else {
@@ -366,6 +375,113 @@
 
 		});
 
+		const foundNodes = [];
+
+		function findNodesByClass(node, className){
+			if (!(node && className)){
+				return;
+			}
+
+			if(node.childNodes){
+				node.childNodes.forEach(child => {
+					findNodesByClass(child, className);
+				});
+			}
+
+			if(node.classList){
+				if (node.classList.contains(className)){
+					foundNodes.push(node);
+					return node;
+				}
+			}
+		}
+
+
+		document.addEventListener("selectionchange", e => {
+
+			const SELECTION = document.getSelection();
+
+			if(SELECTION.isCollapsed)
+				return;
+
+			var range = document.createRange();
+			const SELECTION_RANGE = SELECTION.getRangeAt(0);
+			var fragment = SELECTION_RANGE.cloneContents();
+			var childNodes = fragment.childNodes;
+
+			for(var i = childNodes.length - 1; i >= 0; --i){
+				const child = childNodes[i];
+				if(child.classList){
+					if(child.classList.contains("messages-date")){
+						child.parentNode.removeChild(child);
+					}
+					if(child.classList.contains("chat-message")){
+						findNodesByClass(child, "datetime");
+						findNodesByClass(child, "chat-user");
+						foundNodes.forEach(node => {
+							node.parentNode.removeChild(node);
+						});
+						foundNodes.length = 0;
+					}
+				}
+			}
+
+			selection = fragment.textContent;
+		});
+
+		function copyToClipboard(text){
+			var tempTextArea = document.createElement('textarea');
+			tempTextArea.value = text;
+
+			document.body.appendChild(tempTextArea);
+			tempTextArea.select();
+
+			document.execCommand('copy');
+
+			document.body.removeChild(tempTextArea);
+		}
+
+
+		document.getElementsByClassName("item copy")[0].addEventListener("click", e => {
+			e.preventDefault();
+
+			if(selection){
+				copyToClipboard(selection)
+			}
+			else {
+				var messageElementCopy = messageElement.cloneNode(true);
+				findNodesByClass(messageElementCopy, "datetime");
+				findNodesByClass(messageElementCopy, "chat-user");
+				foundNodes.forEach(node => {
+					node.parentNode.removeChild(node);
+				});
+				foundNodes.length = 0;
+				copyToClipboard(messageElementCopy.textContent);
+			}
+
+			console.log(document.querySelector(".popup"));
+			if(!document.querySelector(".popup")){
+
+			const popup = document.createElement('div');
+			const popupText = document.createElement('p');
+			popupText.innerText = "Скопировано в буфер обмена";
+			popup.appendChild(popupText);
+			popup.classList.add("popup");
+
+			document.querySelector("#content").appendChild(popup);
+			}
+
+			setTimeout(() => {
+				$('.popup').addClass('fade-in');
+			}, 100);
+			
+			setTimeout(() => {
+				$('.popup').removeClass('fade-in');
+			}, 1000);
+
+			selection = "";
+		});
+
 		document.getElementsByClassName("item forward")[0].addEventListener("click", e => {
 			e.preventDefault();
 			const messageId = messageElement.getAttribute("data-id");
@@ -379,17 +495,11 @@
 		document.getElementsByClassName("item save")[0].addEventListener("click", e => {
 			e.preventDefault();
 			const messageId = messageElement.getAttribute("data-id");
-			AJAX('GET /api/message/{0}/'.format(messageId), function (response) {
-				const msg_body = response[0].body;
-				const img_syntax = msg_body.match(/!\[.*\]\(\/download.*\)/gm)[0];
-				const img_caption = img_syntax.match(/\[(.*)\]/)[1];
-				const img_link = img_syntax.match(/\((.*)\)/)[1];
-				fetch(img_link).then(response => {
+			fetch(imageElement.getAttribute("src")).then(response => {
 					return response.blob();
 				}).then( blob => {
-					saveAs(blob, img_caption);
+					saveAs(blob, imageElement.getAttribute("alt"));
 				});
-			});
 		});
 
 		document.getElementsByClassName("item delete")[0].addEventListener("click", e => {
