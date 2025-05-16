@@ -201,7 +201,7 @@
 		<div class="content">
 			<ul class="menu">
 				<li class="item copy">
-					<i class="fs-15 fa fa-copy"></i>
+					<i class="fs15 fa fa-copy"></i>
 					<span>Копировать</span>
 				</li>
 				<li class="item forward">
@@ -215,6 +215,9 @@
 				<li class="item delete">
 					<i class="fs15 red fa fa-trash"></i>
 					<span>Удалить</span>
+				</li><li class="item edit">
+					<i class="fs15 fa fa-edit"></i>
+					<span>Редактировать</span>
 				</li>
 			</ul>
 		</div>
@@ -350,7 +353,7 @@
 				messageElement = document.elementFromPoint(x, y).closest('.chat-message');
 				imageElement = document.elementFromPoint(x, y).closest('img.img-responsive');
 				textElement = messageElement.closest('p');
-				console.log(textElement);
+				//console.log(textElement);
 
 				if (messageElement.classList.contains("me")) {
 					contextMenu.getElementsByClassName("delete")[0].classList.remove("hidden");
@@ -459,7 +462,7 @@
 				copyToClipboard(messageElementCopy.textContent);
 			}
 
-			console.log(document.querySelector(".popup"));
+			//console.log(document.querySelector(".popup"));
 			if(!document.querySelector(".popup")){
 
 			const popup = document.createElement('div');
@@ -510,6 +513,16 @@
 				!index && AJAX('DELETE /api/messages/{0}/{1}/'.format((current.route.type === 'channel' ? 'channel' : 'user') + current.route.item.id, messageId), setTimeout2('contentscroll', function () { chat_reload(1); }, 200));
 			});
 
+		});
+
+		document.getElementsByClassName("item edit")[0].addEventListener("click", e => {
+			e.preventDefault();
+			const messageId = messageElement.getAttribute("data-id");
+
+			AJAX('GET /api/message/{0}/'.format(messageId), function (response) {
+				SET('common.forward', response[0].body);
+				SET('common.form', 'users');
+			});
 		});
 
 		document.addEventListener("wheel", e => {
@@ -700,6 +713,7 @@
 
 				// "chat" is defined in /templates/chat.html
 				if (chat.lastmessage && chat.lastmessage.modified) {
+					console.log("modify");
 					MSG_MESSAGE.secret = chat.lastmessage.secret;
 					MSG_MESSAGE.id = chat.lastmessage.id;
 					chat.lastmessage.modified = false;
@@ -778,7 +792,9 @@
 					for (var i = 0, length = data.length; i < length; i++) {
 						var file = data[i];
 
-						if (file.width && file.height)
+						//console.log(file);
+						if (file.type === "image")
+
 							push.push('![' + file.filename + '](' + file.url + ')'/*['+ file.checksum +']'*/);
 						else
 							push.push('[' + file.filename + '](' + file.url + ')'/*['+ file.checksum +']'*/);
@@ -809,7 +825,7 @@
 
 			$('.datetime').each(function () {
 				var el = $(this);
-				console.log(Tangular.helpers.time(el.attr('data-value')));
+				//console.log(Tangular.helpers.time(el.attr('data-value')));
 				el.html(Tangular.helpers.time(el.attr('data-value')));
 			});
 

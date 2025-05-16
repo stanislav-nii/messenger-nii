@@ -60,9 +60,9 @@ Tangular.register('markdown', function(value) {
 
 	MARKDOWN.message = this;
 
+
 	const FILES = [];
-	//var file_caption = "";
-	//var file_url = "";
+
 	if(MARKDOWN.message.files) {
 		MARKDOWN.message.files.forEach(file => {
 			var file_name = file.name.split();
@@ -73,29 +73,20 @@ Tangular.register('markdown', function(value) {
 				file_caption = file_name.slice(0, lastDotIndex)[0];
 			else file_caption = file_name[0];
 
-			FILES.push({"file_url": file.url, "file_caption": file_caption});
+			const isImage = ["png", "jpg", "jpeg", "gif", "svg", "bmp", "ico", "webp"].some((ext) => {return ext === file.name.split(".").at(-1)});
+			if(isImage){
+				FILES.push({"file_url": file.url, "file_caption": file_caption});
+			}
 		});
 	}
-	else{
-		FILES.push({"file_url": "", "file_caption": ""});
-	}
 
-	console.log(FILES);
-
-	// MARKDOWN.html = marked(marked_features(xss.body)).replace(REGEXP.smiles, function(text) {
-	// 	return text.replace(REGEXP.l, '<').replace(REGEXP.g, '>').replace(REGEXP.quotes, '"');
-	// }).replace(/<img/g, `<a data-fancybox data-caption=${FILES[0].file_caption} data-src=${FILES[0].file_url} ><img class="img-responsive"`).replace(/<a\s/g, '<a target="_blank"');
 	var i = 0;
 
-	console.log(MARKDOWN.html);
 
 	MARKDOWN.html = marked(marked_features(xss.body)).replace(REGEXP.smiles, function(text) {
 		return text.replace(REGEXP.l, '<').replace(REGEXP.g, '>').replace(REGEXP.quotes, '"');
-	}).replace(/<img/g, match => ++i ? `<a data-fancybox data-caption=${FILES[i - 1].file_caption} data-src=${FILES[i - 1].file_url} ><img class="img-responsive"` : "").replace(/<a\s/g, '<a target="_blank"');
+	}).replace(/<img/g, match => ++i ? `<a data-fancybox data-caption=${FILES.length ? FILES[i - 1].file_caption : ""} data-src=${FILES.length ? FILES[i - 1].file_url : ""} ><img class="img-responsive"` : "").replace(/<a\s/g, '<a target="_blank"');
 
-	// MARKDOWN.html = marked(marked_features(xss.body)).replace(REGEXP.smiles, function(text) {
-	// 	return text.replace(REGEXP.l, '<').replace(REGEXP.g, '>').replace(REGEXP.quotes, '"');
-	// }).replace(/<img/g, function(text) {console.log(text); text.replace(/<img/, `<a data-fancybox data-caption=${FILES[i].file_caption} data-src=${FILES[i].file_url} ><img class="img-responsive"`); console.log(text); ++i}).replace(/<a\s/g, '<a target="_blank"');
 
 	if (!MARKDOWN.html.replace(REGEXP.tag, '').trim())
 		MARKDOWN.html = MARKDOWN.html.replace(REGEXP.fa, '"fa fa-2x ');

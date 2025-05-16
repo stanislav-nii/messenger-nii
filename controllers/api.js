@@ -65,6 +65,8 @@ exports.install = function () {
 };
 
 function file_read(req, res) {
+
+  //console.log("req" + req);
   var id = req.split[1].replace("." + req.extension, "");
   res.noCompress = true;
 
@@ -105,19 +107,26 @@ function upload() {
   self.files.wait(
     function (file, next) {
       file.read(function (err, data) {
+
+      var fileType = "";
+      if(file.type.includes("image")) {
+        fileType = "image";
+      }
+
         // Store current file into the HDD
         file.extension = U.getExtension(file.filename);
         var filename =
-          NOSQL("files").binary.insert(file.filename, data) +
-          "." +
-          file.extension;
-		  id.push({
-			url: "/download/" + filename,
-			filename: file.filename,
-			width: file.width,
-			height: file.height,
-			checksum: getHash(data),
-		  });
+          NOSQL("files").binary.insert(file.filename, data) + (file.extension ? "." + file.extension : "");
+          //"." + file.extension;
+
+        id.push({
+          url: "/download/" + filename,
+          filename: file.filename,
+          width: file.width,
+          height: file.height,
+          type: fileType,
+          checksum: getHash(data),
+        });
 
         NOSQL("files").counter.hit("write");
 
@@ -174,6 +183,7 @@ function upload_base64() {
   BASE64.filename = "clipboard" + ext;
   BASE64.url =
     "/download/" + NOSQL("files").binary.insert(BASE64.filename, data) + ext;
+
   NOSQL("files").counter.hit("write");
   self.json(BASE64);
 }
