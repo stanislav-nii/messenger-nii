@@ -71,7 +71,7 @@
 		});
 
 		current.channels.forEach(function (item) {
-			channels.push(item);
+			if(item.is) channels.push(item);
 		});
 
 		SET('users.items', items);
