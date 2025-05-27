@@ -85,7 +85,7 @@ Tangular.register('markdown', function(value) {
 
 	MARKDOWN.html = marked(marked_features(xss.body)).replace(REGEXP.smiles, function(text) {
 		return text.replace(REGEXP.l, '<').replace(REGEXP.g, '>').replace(REGEXP.quotes, '"');
-	}).replace(/<img/g, match => ++i ? `<a data-fancybox data-caption=${FILES.length ? FILES[i - 1].file_caption : ""} data-src=${FILES.length ? FILES[i - 1].file_url : ""} ><img class="img-responsive"` : "").replace(/<a\s/g, '<a target="_blank"');
+	}).replace(/<img/g, match => ++i ? `<a data-fancybox data-caption=${(FILES.length && FILES[i - 1]) ? FILES[i - 1].file_caption : ""} data-src=${(FILES.length && FILES[i - 1]) ? FILES[i - 1].file_url : ""} ><img class="img-responsive"` : "").replace(/<a\s/g, '<a target="_blank"');
 
 
 	if (!MARKDOWN.html.replace(REGEXP.tag, '').trim())
