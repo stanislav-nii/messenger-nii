@@ -57,25 +57,25 @@ function scrollBottom() {
 Tangular.register('markdown', function(value) {
 	var xss = marked_xss_parse(value, this.user.sa);
 
-
 	MARKDOWN.message = this;
 
 
 	const FILES = [];
 
-	if(MARKDOWN.message.files) {
+	if (MARKDOWN.message.files) {
 		MARKDOWN.message.files.forEach(file => {
 			var file_name = file.name.split();
 			const lastDotIndex = file_name.lastIndexOf('.');
 			var file_caption;
 
-			if (lastDotIndex !== -1) 
+			if (lastDotIndex !== -1) {
 				file_caption = file_name.slice(0, lastDotIndex)[0];
+			}
 			else file_caption = file_name[0];
 
-			const isImage = ["png", "jpg", "jpeg", "gif", "svg", "bmp", "ico", "webp"].some((ext) => {return ext === file.name.split(".").at(-1)});
-			if(isImage){
-				FILES.push({"file_url": file.url, "file_caption": file_caption});
+			const isImage = ["png", "jpg", "jpeg", "gif", "svg", "bmp", "ico", "webp", "jfif"].some((ext) => { return ext === file.name.split(".").at(-1).toLowerCase() });
+			if (isImage) {
+				FILES.push({ "file_url": file.url, "file_caption": file_caption });
 			}
 		});
 	}
@@ -85,7 +85,7 @@ Tangular.register('markdown', function(value) {
 
 	MARKDOWN.html = marked(marked_features(xss.body)).replace(REGEXP.smiles, function(text) {
 		return text.replace(REGEXP.l, '<').replace(REGEXP.g, '>').replace(REGEXP.quotes, '"');
-	}).replace(/<img/g, match => ++i ? `<a data-fancybox data-caption=${FILES.length ? FILES[i - 1].file_caption : ""} data-src=${FILES.length ? FILES[i - 1].file_url : ""} ><img class="img-responsive"` : "").replace(/<a\s/g, '<a target="_blank"');
+	}).replace(/<img/g, match => ++i ? `<a data-fancybox data-caption=${FILES[i - 1] ? FILES[i - 1].file_caption : ""} data-src=${FILES[i - 1] ? FILES[i - 1].file_url : ""} ><img class="img-responsive"` : "").replace(/<a\s/g, '<a target="_blank"');
 
 
 	if (!MARKDOWN.html.replace(REGEXP.tag, '').trim())
@@ -247,7 +247,7 @@ function findfiles(str) {
 	var files = [];
 	for (var i = 0, length = match.length; i < length; i++) {
 		var text = match[i].trim();
-		var index = text.indexOf('(');
+		var index = text.lastIndexOf('(');
 		var name = text.substring(1, index - 1);
 		var url = text.substring(index + 1, text.length - 1);
 		files.push({ name: name, url: url });

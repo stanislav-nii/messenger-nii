@@ -100,43 +100,126 @@ function file_read(req, res) {
   });
 }
 
+// function upload() {
+//   var self = this;
+//   var id = [];
+
+//   self.files.wait(
+//     function (file, next) {
+//       file.read(function (err, data) {
+
+//         var fileType = "";
+//         if (file.type.includes("image")) {
+//           fileType = "image";
+//         }
+
+//         // Store current file into the HDD
+//         file.extension = U.getExtension(file.filename);
+//         var filename =
+//           NOSQL("files").binary.insert(file.filename, data) + (file.extension ? "." + file.extension : "");
+//         //"." + file.extension;
+
+//         id.push({
+//           url: "/download/" + filename,
+//           filename: file.filename,
+//           width: file.width,
+//           height: file.height,
+//           type: fileType,
+//           checksum: getHash(data),
+//         });
+
+//         NOSQL("files").counter.hit("write");
+
+//         // Next file
+//         setTimeout(next, 100);
+//       });
+//     },
+//     () => self.json(id)
+//   );
+// }
+
 function upload() {
   var self = this;
   var id = [];
 
+  
   self.files.wait(
     function (file, next) {
+
       file.read(function (err, data) {
+        if (err) {
+          console.error('Error reading file:', file.filename, err);
+          return next(); // Переходим к следующему файлу
+        }
 
-      var fileType = "";
-      if(file.type.includes("image")) {
-        fileType = "image";
-      }
+        // Проверяем, что данные получены полностью
+        if (!data || data.length !== file.size) {
+          console.error('Incomplete file data:', file.filename,
+            'Expected:', file.size, 'Received:', data?.length);
+          return next();
+        }
 
-        // Store current file into the HDD
-        file.extension = U.getExtension(file.filename);
-        var filename =
-          NOSQL("files").binary.insert(file.filename, data) + (file.extension ? "." + file.extension : "");
-          //"." + file.extension;
+        var fileType = "";
+        if (file.type.includes("image")) {
+          fileType = "image";
+        }
 
-        id.push({
-          url: "/download/" + filename,
-          filename: file.filename,
-          width: file.width,
-          height: file.height,
-          type: fileType,
-          checksum: getHash(data),
-        });
+        try {
+          // Проверяем целостность изображения (для картинок)
+          if (fileType === "image" && !isValidImage(data)) {
+            console.error('Invalid image data:', file.filename);
+            return next();
+          }
 
-        NOSQL("files").counter.hit("write");
+          file.extension = U.getExtension(file.filename);
+          var filename = NOSQL("files").binary.insert(file.filename, data) +
+            (file.extension ? "." + file.extension : "");
 
-        // Next file
-        setTimeout(next, 100);
+          id.push({
+            url: "/download/" + filename,
+            filename: file.filename,
+            width: file.width,
+            height: file.height,
+            type: fileType,
+            checksum: getHash(data),
+            size: data.length // Добавляем реальный размер полученных данных
+          });
+
+          NOSQL("files").counter.hit("write");
+
+        } catch (e) {
+          console.error('Error processing file:', file.filename, e);
+        }
+
+        // Убираем setTimeout - он может создавать проблемы
+        next();
       });
     },
     () => self.json(id)
   );
 }
+
+// Дополнительная функция для проверки целостности изображения
+function isValidImage(buffer) {
+  try {
+    // Простая проверка: первые байты должны соответствовать формату изображения
+    const signatures = {
+      'jpg': [0xFF, 0xD8, 0xFF],
+      'png': [0x89, 0x50, 0x4E, 0x47],
+      'gif': [0x47, 0x49, 0x46, 0x38]
+    };
+
+    for (const [type, sig] of Object.entries(signatures)) {
+      if (sig.every((byte, i) => buffer[i] === byte)) {
+        return true;
+      }
+    }
+    return false;
+  } catch (e) {
+    return false;
+  }
+}
+
 
 function upload_base64() {
   var self = this;
