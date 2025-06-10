@@ -331,6 +331,7 @@
 		var messageElement;
 		var imageElement;
 		var selection;
+		var check = true;
 
 		document.addEventListener("contextmenu", e => {
 			e.preventDefault();
@@ -342,18 +343,29 @@
 
 
 			if (document.elementFromPoint(x, y).closest('.chat-message')) {
+
 				var contextMenuWidth = 220;
 				var leftPos = '';
+				var leftPosY = '';
+
 				if (x < window.innerWidth - contextMenuWidth) {
 					leftPos = `${x}px`;
 				} else {
 					leftPos = `${x - contextMenuWidth}px`;
 				}
+				if (y < window.innerHeight - 180) {
+					leftPosY = `${y}px`;
+				} else {
+					leftPosY = `${y - 180}px`;
+				}
+
+				if (!check) messageElement.getElementsByClassName("chat-body")[0].style.opacity = '1';
 
 				messageElement = document.elementFromPoint(x, y).closest('.chat-message');
 				imageElement = document.elementFromPoint(x, y).closest('img.img-responsive');
 				textElement = messageElement.closest('p');
-				//console.log(textElement);
+				messageElement.getElementsByClassName("chat-body")[0].style.opacity = '0.5';
+				check = false;
 
 				if (messageElement.classList.contains("me")) {
 					contextMenu.getElementsByClassName("delete")[0].classList.remove("hidden");
@@ -369,8 +381,15 @@
 					contextMenu.getElementsByClassName("save")[0].classList.add("hidden");
 				}
 
+				if (messageElement.classList.contains("me")) {
+					contextMenu.getElementsByClassName("edit")[0].classList.remove("hidden");
+				}
+				else {
+					contextMenu.getElementsByClassName("edit")[0].classList.add("hidden");
+				}
+
 				contextMenu.style.left = leftPos;
-				contextMenu.style.top = `${y}px`;
+				contextMenu.style.top = leftPosY;
 				contextMenu.style.display = "block";
 
 			}
@@ -506,14 +525,15 @@
 		});
 
 		document.getElementsByClassName("item delete")[0].addEventListener("click", e => {
-			e.preventDefault();
-			const messageId = messageElement.getAttribute("data-id");
+				e.preventDefault();
+				const messageId = messageElement.getAttribute("data-id");
+				console.log(current);
 
-			FIND('confirm').confirm('@(Удалить сообщение?)', ['@(Да)', '@(Нет)'], function (index) {
-				!index && AJAX('DELETE /api/messages/{0}/{1}/'.format((current.route.type === 'channel' ? 'channel' : 'user') + current.route.item.id, messageId), setTimeout2('contentscroll', function () { chat_reload(1); }, 200));
+				FIND('confirm').confirm('@(Удалить сообщение?)', ['@(Да)', '@(Нет)'], function (index) {
+					!index && AJAX('DELETE /api/messages/{0}/{1}/'.format((current.route.type === 'channel' ? 'channel' : 'user') + current.route.item.id, messageId), setTimeout2('contentscroll', function () { chat_reload(1); }, 200));
+				});
+
 			});
-
-		});
 
 		document.getElementsByClassName("item edit")[0].addEventListener("click", e => {
 			e.preventDefault();
@@ -526,18 +546,24 @@
 		});
 
 		document.addEventListener("wheel", e => {
-			let x = e.clientX, y = e.clientY;
-			if (!document.elementFromPoint(x, y).closest('.wrapper-context-menu')) contextMenu.style.display = "none";
-		});
+				let x = e.clientX, y = e.clientY;
+				if (!document.elementFromPoint(x, y).closest('.wrapper-context-menu')) {
+					contextMenu.style.display = "none";
+					messageElement?.querySelector(".chat-body")?.style.setProperty('opacity', '1');
+				}
+			});
 
-		document.addEventListener("click", () => contextMenu.style.display = "none");
+			document.addEventListener("click", () => {
+				contextMenu.style.display = "none";
+				messageElement?.querySelector(".chat-body")?.style.setProperty('opacity', '1');
+			});
 
 		////////////////////////////////////////////////////end context menu
 
 
 
 
-		MAIN.$version = 3;
+				MAIN.$version = 3;
 
 		MAKE('common', function () {
 			this.enter == null && (this.enter = true);
@@ -960,6 +986,15 @@
 
 		function refresh_recent() {
 			var recent = [];
+
+
+
+			// пробовал делать очередь recent
+			//console.log(user.recent);
+			// user.recent.forEach(function (item){
+			// 	console.log(current.users);
+			// 	current.users[item.id] && recent.push(item);
+			// });
 
 			current.users.forEach(function (item) {
 				user.recent[item.id] && recent.push(item);

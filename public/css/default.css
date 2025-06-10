@@ -7,7 +7,7 @@ html { overflow: hidden; user-select: none;}
 html,body { margin: 0; height: 100%; position: relative; }
 body { background-color: #f6f6f6; padding: 0; color: #777; font-smoothing: antialiased; overflow: none; overflow-scrolling: touch; font-family: 'Roboto'; font-size: 14px; }
 
-.body { height: 100%; margin-left: 220px; overflow: hidden; font-family: 'Roboto';}
+.body { height: 100%; margin-left: 300px; overflow: hidden; font-family: 'Roboto';}
 
 .padding { padding: 20px; }
 .center { text-align: center; }
@@ -29,11 +29,11 @@ body { background-color: #f6f6f6; padding: 0; color: #777; font-smoothing: antia
 .npb { padding-bottom: 0; }
 .npt { padding-top: 0; }
 
-#header { border-bottom: 1px solid #E0E0E0; padding: 0 20px; background: linear-gradient(white,#F5F5F5); min-height: 60px; box-shadow: 0 3px 10px rgba(0,0,0,0.08); position: fixed; right: 0; left: 220px; z-index: 5; }
+#header { border-bottom: 1px solid #E0E0E0; padding: 0 20px; background: linear-gradient(white,#F5F5F5); min-height: 60px; box-shadow: 0 3px 10px rgba(0,0,0,0.08); position: fixed; right: 0; left: 300px; z-index: 5; }
 #header .m { margin-bottom: 0;}
 #header .ui-nosqlcounter { height: 33px; margin: 12px 0 0 0; }
 #content { overflow-y: auto; overflow-x: hidden; width: 100%; overflow-scrolling: touch; }
-#messagebox { min-height: 65px; box-shadow: 0 -3px 10px rgba(0,0,0,0.08); position: fixed; bottom: 0; left: 220px; right: 0; user-select: none; }
+#messagebox { min-height: 65px; box-shadow: 0 -3px 10px rgba(0,0,0,0.08); position: fixed; bottom: 0; left: 300px; right: 0; user-select: none; }
 #status { border-top: 1px solid #E0E0E0; height: 30px; font-size: 11px; padding: 5px 0 0 15px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; color: gray; background: linear-gradient(white,#F8F8F8); line-height: 16px; }
 #status .fa { font-size: 16px; vertical-align: middle; line-height: 0; }
 #status > div { float: left; margin-right: 10px; }
@@ -44,13 +44,24 @@ body { background-color: #f6f6f6; padding: 0; color: #777; font-smoothing: antia
 #status .exec i { transition: all 0.2s; }
 #status .exec { transition: all 0.2s; }
 #status .exec:hover { color: black; }
-#panel { overflow-x: hidden; overflow-y: auto; width: 240px; padding-right: 20px; overflow-scrolling: touch; padding-top: 15px; }
+#panel { overflow-x: hidden; overflow-y: auto; width: 300px; padding-right: 0px; overflow-scrolling: touch; padding-top: 15px; font-size: 16px;}
 #panel .caption:first-child { margin-top: 0; }
 
 .mainmenu { position: absolute; }
 .monospace { font-family: Menlo, Monaco, monospace;}
 
-.caption { font-size: 12px; font-weight: bold; color: silver; text-transform: uppercase; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.caption {
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 5px 0 3px 20px;
+  padding-left: 20px;
+  border-radius: 5px;
+}
+
 .caption .operation { float: right; margin: -3px 0 0 7px; font-size: 14px; cursor: pointer; opacity: .4; font-size: 15px; }
 .caption .operation:first-child { margin-right: 21px; font-size: 14px; }
 .caption .operation:hover { opacity: 1; }
@@ -89,7 +100,7 @@ body { background-color: #f6f6f6; padding: 0; color: #777; font-smoothing: antia
 .chat-secret span { font-size: 10px; padding: 2px 5px; border-radius: 4px; background-color: #D63B32; color: white; }
 .chat-secret { margin-bottom: 5px; }
 
-.panel { height: 100%; float: left; width: 220px; overflow: hidden; transition: left 0.5s; }
+.panel { height: 100%; float: left; width: 300px; overflow: hidden; transition: left 0.5s; }
 .panel .padding { padding: 5px 20px; }
 
 .panel nav a { display: block; padding: 1px 0 1px 20px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-right: 15px; border-radius: 0 4px 4px 0; margin-bottom: 2px; }
@@ -99,7 +110,7 @@ body { background-color: #f6f6f6; padding: 0; color: #777; font-smoothing: antia
 .panel nav .highlight { font-weight: bold; }
 .panel nav .fa-heart { opacity: 1; }
 .panel nav .fa-check-circle { opacity: 1; }
-.panel .caption { margin: 20px 0 5px 20px; }
+/* .panel .caption { margin: 20px 0 5px 20px; } */
 
 .panel .user { color: white; padding: 20px 20px 5px; }
 .panel .user-name { font-size: 18px; font-weight: bold; }
@@ -184,7 +195,7 @@ body { background-color: #f6f6f6; padding: 0; color: #777; font-smoothing: antia
 .theme-purple .panel .user { color: white; }
 .theme-purple .panel .user-settings .off { color: gray !important; }
 .theme-purple .panel .user-settings .fa { color: #FFCE54; border-left-color: #4E4277; }
-.theme-purple .caption { color: white; }
+.theme-purple .caption { color: white; background-color: #37188548;}
 .theme-purple .panel .user-stats { color: white; }
 
 .section { border: 1px solid #E0E0E0; border-radius: 4px; }
