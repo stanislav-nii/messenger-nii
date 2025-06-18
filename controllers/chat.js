@@ -1,16 +1,16 @@
 const MSG_ONOFF = { type: 'online' };
 const MSG_CDL = { type: 'cdl' };
 const MSG_UNREAD = { type: 'unread' };
-const MSG_READ = {type: 'read'}
+const MSG_READ = { type: 'read' }
 const MSG_TYPING = { type: 'typing' };
 const MSG_MUTE = { type: 'mute' };
 const SKIPFIELDS = { email: true, unread: true, recent: true, channels: true, password: true, ticks: true };
 
-exports.install = function() {
+exports.install = function () {
 	F.websocket('/', messages, ['json', 'authorize'], 3);
 };
 
-var read_interval = setInterval(()=>{}, 5000);
+var read_interval = setInterval(() => { }, 5000);
 
 function messages() {
 
@@ -18,17 +18,17 @@ function messages() {
 
 	F.global.websocket = self;
 
-	self.autodestroy(function() {
+	self.autodestroy(function () {
 		F.global.websocket = null;
 		F.global.refresh = null;
 	});
 
 	// Temporary method for refreshing data
-	F.global.refresh = function() {
+	F.global.refresh = function () {
 		MSG_CDL.channels = F.global.channels;
 		MSG_CDL.users = F.global.users;
 		var is = true;
-		self.send(MSG_CDL, undefined, undefined, function(key, value) {
+		self.send(MSG_CDL, undefined, undefined, function (key, value) {
 			if (is && key === 'channels') {
 				is = false;
 				return value;
@@ -38,7 +38,7 @@ function messages() {
 		F.emit('messenger.refresh', self);
 	};
 
-	self.on('open', function(client) {
+	self.on('open', function (client) {
 		var was = client.user.online === true;
 		var is = true;
 		client.user.online = true;
@@ -47,7 +47,7 @@ function messages() {
 		MSG_CDL.channels = F.global.channels;
 		MSG_CDL.users = F.global.users;
 
-		client.send(MSG_CDL, undefined, function(key, value) {
+		client.send(MSG_CDL, undefined, function (key, value) {
 			if (is && key === 'channels') {
 				is = false;
 				return value;
@@ -55,7 +55,7 @@ function messages() {
 			return SKIPFIELDS[key] ? undefined : value;
 		});
 
-		setTimeout(function() {
+		setTimeout(function () {
 			MSG_ONOFF.id = client.user.id;
 			MSG_ONOFF.online = true;
 			MSG_ONOFF.datelogged = F.datetime;
@@ -65,7 +65,7 @@ function messages() {
 		!was && F.emit('messenger.open', self, client);
 	});
 
-	self.on('close', function(client) {
+	self.on('close', function (client) {
 		if (self.find(n => n.user.id === client.user.id && n.id !== client.id))
 			return;
 		var was = client.user.online === false;
@@ -77,7 +77,7 @@ function messages() {
 		!was && F.emit('messenger.close', self, client);
 	});
 
-	self.on('message', function(client, message) {
+	self.on('message', function (client, message) {
 
 		var iduser = client.user.id;
 		F.emit('messenger.data', self, client, message);
@@ -111,15 +111,15 @@ function messages() {
 			case 'user':
 				client.user.threadtype = client.threadtype = message.type;
 				client.user.threadid = client.threadid = message.id;
-				message.type === 'user' && iduser !== message.id && (client.user.recent[message.id] = true);
+				// Убрали строку с обновлением recent при переходе в чат
 				client.user.unread[message.id] && (delete client.user.unread[message.id]);
-				self && self.send(MSG_READ, function(id, m) {
+				self && self.send(MSG_READ, function (id, m) {
 					if (m.user.id !== client.user.id && ((m.threadid === client.threadid) || (m.user.id === client.threadid && (m.threadid === client.user.id))) && (!message.users || message.users[m.user.id])) {
 						return true;
 					}
 				});
-				
 				break;
+
 			case 'mute':
 
 				if (!client.threadid)
@@ -162,20 +162,20 @@ function messages() {
 
 			case 'forward':
 
-				if(client.threadid === message.recipientid) {
+				if (client.threadid === message.recipientid) {
 					message.type = "message";
 					!client.user.blocked && F.global.sendmessage(client, message);
 				} else {
-				const THREADTYPE = client.threadtype;
-				const THREADID = client.threadid;
-			
-				client.threadtype = message.recipienttype;
-				client.threadid = message.recipientid;
-				
-				!client.user.blocked && F.global.forward(client, message);
+					const THREADTYPE = client.threadtype;
+					const THREADID = client.threadid;
 
-				client.threadtype = THREADTYPE;
-				client.threadid = THREADID;
+					client.threadtype = message.recipienttype;
+					client.threadid = message.recipientid;
+
+					!client.user.blocked && F.global.forward(client, message);
+
+					client.threadtype = THREADTYPE;
+					client.threadid = THREADID;
 				}
 				break;
 
@@ -183,7 +183,7 @@ function messages() {
 	});
 }
 
-F.global.sendmessage = function(client, message) {
+F.global.sendmessage = function (client, message) {
 
 	if (!client.threadid || !client.threadtype)
 		return;
@@ -210,7 +210,7 @@ F.global.sendmessage = function(client, message) {
 
 	id && (message.edited = true);
 	client.user.lastmessages[client.threadid] = message.id;
-	
+
 	F.emit('messenger.message', self, client, message);
 	NOSQL('messages').counter.hit('all').hit(iduser);
 
@@ -223,7 +223,7 @@ F.global.sendmessage = function(client, message) {
 		is = true;
 
 		// Users can be logged from multiple devices
-		self && self.send(message, function(id, n) {
+		self && self.send(message, function (id, n) {
 
 
 			if (n === client)
@@ -247,20 +247,20 @@ F.global.sendmessage = function(client, message) {
 			return n.user.id === iduser && n.threadid === client.threadid;
 		});
 
-		if(count > 0) {
+		if (count > 0) {
 			message.unread = false;
 		}
 
 		if (is) {
 			tmp = F.global.users.findItem('id', client.threadid);
 			if (tmp && (!tmp.mute || !tmp.mute[iduser])) {
-
 				if (tmp.unread[iduser])
 					tmp.unread[iduser]++;
 				else
 					tmp.unread[iduser] = 1;
 
-				tmp.recent[iduser] = true;
+				// Обновляем recent только при получении нового сообщения
+				tmp.recent[iduser] = F.datetime.getTime();
 
 				if (tmp.online) {
 					MSG_UNREAD.unread = tmp.unread;
@@ -271,12 +271,17 @@ F.global.sendmessage = function(client, message) {
 						tmp && tmp.send(MSG_UNREAD);
 					}
 				}
-
 				OPERATION('users.save', NOOP);
 			}
 		}
 
-		
+		// Обновляем recent отправителя при отправке сообщения
+		if (iduser !== client.threadid) {
+			client.user.recent[client.threadid] = F.datetime.getTime();
+			OPERATION('users.save', NOOP);
+		}
+
+
 		client.send && client.send(message);
 
 	} else {
@@ -284,17 +289,17 @@ F.global.sendmessage = function(client, message) {
 		tmp = {};
 		idchannel = client.threadid;
 
-		
+
 		var count = 0;
-		self && self.send(message, function (id, m){
+		self && self.send(message, function (id, m) {
 			if (m.threadid === client.threadid && (!message.users || message.users[m.user.id])) {
 				++count;
 			}
 		});
 
 		// Notify users in this channel
-		self && self.send(message, function(id, m) {
-			count < 2 ? message.unread = true: message.unread = false;
+		self && self.send(message, function (id, m) {
+			count < 2 ? message.unread = true : message.unread = false;
 			if (m.threadid === client.threadid && (!message.users || message.users[m.user.id])) {
 				tmp[m.user.id] = true;
 				m.user.lastmessages[m.threadid] = message.id;
@@ -313,7 +318,7 @@ F.global.sendmessage = function(client, message) {
 			}
 		}
 
-		self && self.all(function(m) {
+		self && self.all(function (m) {
 			if (m.user.id !== iduser && m.threadid !== client.threadid && (!m.user.blacklist || !m.user.blacklist[client.threadid]) && (!m.user.mute || !m.user.mute[client.threadid]) && (!m.user.channels || m.user.channels[client.threadid]) && (!message.users || message.users[m.user.id])) {
 				MSG_UNREAD.unread = m.user.unread;
 				MSG_UNREAD.lastmessages = m.user.lastmessages;
@@ -358,9 +363,9 @@ F.global.sendmessage = function(client, message) {
 
 F.global.forward = function (client, message) {
 
-	client.user.recent[client.threadid] = true;
-	OPERATION('users.save', NOOP);
-	
+	client.user.recent[client.threadid] = F.datetime.getTime();
+    OPERATION('users.save', NOOP);
+
 	message.type = "message";
 	if (!client.threadid || !client.threadtype)
 		return;
@@ -387,7 +392,7 @@ F.global.forward = function (client, message) {
 
 	id && (message.edited = true);
 	client.user.lastmessages[client.threadid] = message.id;
-	
+
 	F.emit('messenger.message', self, client, message);
 	NOSQL('messages').counter.hit('all').hit(iduser);
 
@@ -400,7 +405,7 @@ F.global.forward = function (client, message) {
 		is = true;
 
 		// Users can be logged from multiple devices
-		self && self.send(message, function(id, n) {
+		self && self.send(message, function (id, n) {
 
 
 			//var CircularJSON = require('circular-json');
@@ -427,7 +432,7 @@ F.global.forward = function (client, message) {
 			return n.user.id === iduser && n.threadid === client.threadid;
 		});
 
-		if(count > 0) {
+		if (count > 0) {
 			message.unread = false;
 		}
 
@@ -440,7 +445,7 @@ F.global.forward = function (client, message) {
 				else
 					tmp.unread[iduser] = 1;
 
-				tmp.recent[iduser] = true;
+				tmp.recent[iduser] = F.datetime.getTime(); // сохраняем timestamp
 
 				if (tmp.online) {
 					MSG_UNREAD.unread = tmp.unread;
@@ -456,7 +461,7 @@ F.global.forward = function (client, message) {
 			}
 		}
 
-		
+
 		//client.send && client.send(message);
 
 	} else {
@@ -464,23 +469,23 @@ F.global.forward = function (client, message) {
 		tmp = {};
 		idchannel = client.threadid;
 
-		
-		
+
+
 		var count = 0;
-		self && self.send(message, function (id, m){
+		self && self.send(message, function (id, m) {
 			if (m.threadid === client.threadid && (!message.users || message.users[m.user.id])) {
 				++count;
 			}
 		});
 
-	
+
 		// Notify users in this channel
-		self && self.send(message, function(id, m) {
+		self && self.send(message, function (id, m) {
 			//var CircularJSON = require('circular-json');
 			//var str = CircularJSON.stringify(client);
 			//console.log(str);
 
-			count < 2 ? message.unread = true: message.unread = false;
+			count < 2 ? message.unread = true : message.unread = false;
 			if (m.threadid === client.threadid && (!message.users || message.users[m.user.id]) && m.req.user !== client.req.user) {
 				tmp[m.user.id] = true;
 				m.user.lastmessages[m.threadid] = message.id;
@@ -499,7 +504,7 @@ F.global.forward = function (client, message) {
 			}
 		}
 
-		self && self.all(function(m) {
+		self && self.all(function (m) {
 			if (m.user.id !== iduser && m.threadid !== client.threadid && (!m.user.blacklist || !m.user.blacklist[client.threadid]) && (!m.user.mute || !m.user.mute[client.threadid]) && (!m.user.channels || m.user.channels[client.threadid]) && (!message.users || message.users[m.user.id])) {
 				MSG_UNREAD.unread = m.user.unread;
 				MSG_UNREAD.lastmessages = m.user.lastmessages;
@@ -514,7 +519,7 @@ F.global.forward = function (client, message) {
 		// tmp = {};
 		// idchannel = client.threadid;
 
-		
+
 		// var count = 0;
 		// self && self.send(message, function (id, m){
 

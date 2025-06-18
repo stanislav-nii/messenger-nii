@@ -215,7 +215,8 @@
 				<li class="item delete">
 					<i class="fs15 red fa fa-trash"></i>
 					<span>Удалить</span>
-				</li><li class="item edit">
+				</li>
+				<li class="item edit">
 					<i class="fs15 fa fa-edit"></i>
 					<span>Редактировать</span>
 				</li>
@@ -318,7 +319,7 @@
 
 
 
-	<input type="file" id="uploadfile" class="hidden" multiple/>
+	<input type="file" id="uploadfile" class="hidden" multiple />
 
 	@{json(user, 'userdata', (k, v) => k !== 'password' ? v : undefined)}
 
@@ -374,7 +375,7 @@
 					contextMenu.getElementsByClassName("delete")[0].classList.add("hidden");
 				}
 
-				if(messageElement.querySelector(".chat-body img") && imageElement){
+				if (messageElement.querySelector(".chat-body img") && imageElement) {
 					contextMenu.getElementsByClassName("save")[0].classList.remove("hidden");
 				}
 				else {
@@ -399,19 +400,19 @@
 
 		const foundNodes = [];
 
-		function findNodesByClass(node, className){
-			if (!(node && className)){
+		function findNodesByClass(node, className) {
+			if (!(node && className)) {
 				return;
 			}
 
-			if(node.childNodes){
+			if (node.childNodes) {
 				node.childNodes.forEach(child => {
 					findNodesByClass(child, className);
 				});
 			}
 
-			if(node.classList){
-				if (node.classList.contains(className)){
+			if (node.classList) {
+				if (node.classList.contains(className)) {
 					foundNodes.push(node);
 					return node;
 				}
@@ -423,7 +424,7 @@
 
 			const SELECTION = document.getSelection();
 
-			if(SELECTION.isCollapsed)
+			if (SELECTION.isCollapsed)
 				return;
 
 			var range = document.createRange();
@@ -431,13 +432,13 @@
 			var fragment = SELECTION_RANGE.cloneContents();
 			var childNodes = fragment.childNodes;
 
-			for(var i = childNodes.length - 1; i >= 0; --i){
+			for (var i = childNodes.length - 1; i >= 0; --i) {
 				const child = childNodes[i];
-				if(child.classList){
-					if(child.classList.contains("messages-date")){
+				if (child.classList) {
+					if (child.classList.contains("messages-date")) {
 						child.parentNode.removeChild(child);
 					}
-					if(child.classList.contains("chat-message")){
+					if (child.classList.contains("chat-message")) {
 						findNodesByClass(child, "datetime");
 						findNodesByClass(child, "chat-user");
 						foundNodes.forEach(node => {
@@ -451,7 +452,7 @@
 			selection = fragment.textContent;
 		});
 
-		function copyToClipboard(text){
+		function copyToClipboard(text) {
 			var tempTextArea = document.createElement('textarea');
 			tempTextArea.value = text;
 
@@ -467,7 +468,7 @@
 		document.getElementsByClassName("item copy")[0].addEventListener("click", e => {
 			e.preventDefault();
 
-			if(selection){
+			if (selection) {
 				copyToClipboard(selection)
 			}
 			else {
@@ -482,21 +483,21 @@
 			}
 
 			//console.log(document.querySelector(".popup"));
-			if(!document.querySelector(".popup")){
+			if (!document.querySelector(".popup")) {
 
-			const popup = document.createElement('div');
-			const popupText = document.createElement('p');
-			popupText.innerText = "Скопировано в буфер обмена";
-			popup.appendChild(popupText);
-			popup.classList.add("popup");
+				const popup = document.createElement('div');
+				const popupText = document.createElement('p');
+				popupText.innerText = "Скопировано в буфер обмена";
+				popup.appendChild(popupText);
+				popup.classList.add("popup");
 
-			document.querySelector("#content").appendChild(popup);
+				document.querySelector("#content").appendChild(popup);
 			}
 
 			setTimeout(() => {
 				$('.popup').addClass('fade-in');
 			}, 100);
-			
+
 			setTimeout(() => {
 				$('.popup').removeClass('fade-in');
 			}, 1000);
@@ -518,22 +519,22 @@
 			e.preventDefault();
 			const messageId = messageElement.getAttribute("data-id");
 			fetch(imageElement.getAttribute("src")).then(response => {
-					return response.blob();
-				}).then( blob => {
-					saveAs(blob, imageElement.getAttribute("alt"));
-				});
+				return response.blob();
+			}).then(blob => {
+				saveAs(blob, imageElement.getAttribute("alt"));
+			});
 		});
 
 		document.getElementsByClassName("item delete")[0].addEventListener("click", e => {
-				e.preventDefault();
-				const messageId = messageElement.getAttribute("data-id");
-				console.log(current);
+			e.preventDefault();
+			const messageId = messageElement.getAttribute("data-id");
+			console.log(current);
 
-				FIND('confirm').confirm('@(Удалить сообщение?)', ['@(Да)', '@(Нет)'], function (index) {
-					!index && AJAX('DELETE /api/messages/{0}/{1}/'.format((current.route.type === 'channel' ? 'channel' : 'user') + current.route.item.id, messageId), setTimeout2('contentscroll', function () { chat_reload(1); }, 200));
-				});
-
+			FIND('confirm').confirm('@(Удалить сообщение?)', ['@(Да)', '@(Нет)'], function (index) {
+				!index && AJAX('DELETE /api/messages/{0}/{1}/'.format((current.route.type === 'channel' ? 'channel' : 'user') + current.route.item.id, messageId), setTimeout2('contentscroll', function () { chat_reload(1); }, 200));
 			});
+
+		});
 
 		document.getElementsByClassName("item edit")[0].addEventListener("click", e => {
 			e.preventDefault();
@@ -546,24 +547,24 @@
 		});
 
 		document.addEventListener("wheel", e => {
-				let x = e.clientX, y = e.clientY;
-				if (!document.elementFromPoint(x, y).closest('.wrapper-context-menu')) {
-					contextMenu.style.display = "none";
-					messageElement?.querySelector(".chat-body")?.style.setProperty('opacity', '1');
-				}
-			});
-
-			document.addEventListener("click", () => {
+			let x = e.clientX, y = e.clientY;
+			if (!document.elementFromPoint(x, y).closest('.wrapper-context-menu')) {
 				contextMenu.style.display = "none";
 				messageElement?.querySelector(".chat-body")?.style.setProperty('opacity', '1');
-			});
+			}
+		});
+
+		document.addEventListener("click", () => {
+			contextMenu.style.display = "none";
+			messageElement?.querySelector(".chat-body")?.style.setProperty('opacity', '1');
+		});
 
 		////////////////////////////////////////////////////end context menu
 
 
 
 
-				MAIN.$version = 3;
+		MAIN.$version = 3;
 
 		MAKE('common', function () {
 			this.enter == null && (this.enter = true);
@@ -718,6 +719,9 @@
 							favicon.badge('?');
 							var owner = current.users.findItem('id', response.iduser);
 							SETTER('nativenotifications', 'append', '@(New message from: {0})'.format(owner.name), response.body.substring(0, 80));
+							// ОБНОВЛЯЕМ RECENT ТОЛЬКО ДЛЯ ВХОДЯЩИХ СООБЩЕНИЙ
+							user.recent[response.iduser] = Date.now();
+							refresh_recent();
 						}
 						response.iduser !== user.id && playsound();
 					}
@@ -733,11 +737,9 @@
 		ON('@codemirror', function (component) {
 
 			component.enter = function (type) {
-
 				if ((type && common.enter) || (!type && !common.enter))
 					return CodeMirror.Pass;
 
-				// "chat" is defined in /templates/chat.html
 				if (chat.lastmessage && chat.lastmessage.modified) {
 					console.log("modify");
 					MSG_MESSAGE.secret = chat.lastmessage.secret;
@@ -753,12 +755,16 @@
 				MSG_MESSAGE.users = findusers(MSG_MESSAGE.body);
 				MSG_MESSAGE.users && (MSG_MESSAGE.users[user.id] = true);
 
-
 				EMIT('messenger.send', MSG_MESSAGE);
 
 				if (MSG_MESSAGE.body) {
 					component.set('');
 					SETTER('websocket', 'send', MSG_MESSAGE);
+					// ОБНОВЛЯЕМ RECENT ПРИ ОТПРАВКЕ СООБЩЕНИЯ
+					if (current.route.type === 'user') {
+						user.recent[current.route.item.id] = Date.now();
+						refresh_recent();
+					}
 				}
 
 				SETTER('fontawesome', 'hide');
@@ -931,7 +937,7 @@
 					SETTER('codemirror', 'reload');
 					var is = user.unread[item.id];
 					delete user.unread[item.id];
-					user.recent[item.id] = true;
+					// УДАЛИТЬ ЭТУ СТРОКУ: user.recent[item.id] = true;
 					refresh_recent();
 					refresh_mute();
 					is && refresh_unread();
@@ -987,17 +993,28 @@
 		function refresh_recent() {
 			var recent = [];
 
+			// Создаем массив для сортировки
+			var recentWithTime = [];
+			for (var id in user.recent) {
+				if (user.recent.hasOwnProperty(id)) {
+					var userItem = current.users.findItem('id', id);
+					if (userItem) {
+						recentWithTime.push({
+							user: userItem,
+							timestamp: user.recent[id]
+						});
+					}
+				}
+			}
 
+			// Сортируем по времени (новые сверху)
+			recentWithTime.sort(function (a, b) {
+				return b.timestamp - a.timestamp;
+			});
 
-			// пробовал делать очередь recent
-			//console.log(user.recent);
-			// user.recent.forEach(function (item){
-			// 	console.log(current.users);
-			// 	current.users[item.id] && recent.push(item);
-			// });
-
-			current.users.forEach(function (item) {
-				user.recent[item.id] && recent.push(item);
+			// Формируем итоговый массив
+			recent = recentWithTime.map(function (item) {
+				return item.user;
 			});
 
 			if (NOTMODIFIED('current.recent', recent))
@@ -1158,7 +1175,7 @@
 					right: ['download', 'toggleZoom', 'close'],
 				}
 			}
-		}); 
+		});
 
 		Fancybox.defaults.l10n = {
 			CLOSE: "Закрыть",

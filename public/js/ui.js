@@ -5,7 +5,7 @@ COMPONENT('searchbox', function() {
 	self.noValidate();
 	self.make = function() {
 		self.classes('search');
-		self.html('<span><i class="fa fa-search"></i></span><div><input type="text" placeholder="{0}" data-jc-bind=""{1} /></div>'.format(self.attr('data-placeholder') || ''));
+		self.html('<span><i class="fa fa-search"></i></span><div><input type="text" placeholder="{0}" data-jc-bind /></div>'.format(self.attr('data-placeholder') || '', self.attr('data-enter') === 'true' ? ' data-jc-keypress="false"' : ''));
 		icon = self.find('.fa');
 		self.event('click', '.fa-times', function() {
 			self.set('');
@@ -24,7 +24,7 @@ COMPONENT('searchbox_users_form', function() {
 	self.noValidate();
 	self.make = function() {
 		self.classes('search-users-form');
-		self.html('<span><i class="fa fa-search"></i></span><div><input type="text" placeholder="{0}" data-jc-bind=""{1} /></div>'.format(self.attr('data-placeholder') || ''));
+		self.html('<span><i class="fa fa-search"></i></span><div><input type="text" placeholder="{0}" data-jc-bind /></div>'.format(self.attr('data-placeholder') || ''));
 		icon = self.find('.fa');
 		self.event('click', '.fa-times', function() {
 			self.set('');
@@ -373,8 +373,8 @@ COMPONENT('textbox', function() {
 		attrs.attr('type', self.type === 'password' ? self.type : 'text');
 		attrs.attr('placeholder', self.attr('data-placeholder'));
 		attrs.attr('maxlength', self.attr('data-maxlength'));
-		//attrs.attr('data-jc-keypress', self.attr('data-jc-keypress'));
-		//attrs.attr('data-jc-keypress-delay', self.attr('data-jc-keypress-delay'));
+		attrs.attr('data-jc-keypress', self.attr('data-jc-keypress'));
+		attrs.attr('data-jc-keypress-delay', self.attr('data-jc-keypress-delay'));
 		attrs.attr('data-jc-bind', '');
 		attrs.attr('name', self.path);
 
