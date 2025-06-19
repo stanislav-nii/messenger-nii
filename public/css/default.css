@@ -44,9 +44,57 @@ body { background-color: #f6f6f6; padding: 0; color: #777; font-smoothing: antia
 #status .exec i { transition: all 0.2s; }
 #status .exec { transition: all 0.2s; }
 #status .exec:hover { color: black; }
-#panel { overflow-x: hidden; overflow-y: auto; width: 300px; padding-right: 0px; overflow-scrolling: touch; padding-top: 15px; font-size: 16px;}
-#panel .caption:first-child { margin-top: 0; }
 
+/* Основные изменения для панели */
+.panel {
+    height: 100%;
+    float: left;
+    width: 300px;
+    overflow: hidden;
+    transition: left 0.5s;
+    display: flex;
+    flex-direction: column;
+}
+
+#panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 15px 8px 0 0; /* Добавлен отступ справа */
+    font-size: 16px;
+}
+
+/* Контейнер для прокручиваемого контента */
+#panel > div[data-jc="search"] {
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 15px;
+    /*margin-right: -8px;*/ /* Компенсируем отступ для контента */
+    /*padding-right: 8px;*/ /* Добавляем отступ для скроллбара */
+}
+
+/* Кастомный скроллбар для Electron 22.3.9 с отступом */
+#panel > div[data-jc="search"]::-webkit-scrollbar {
+    width: 8px;
+}
+
+#panel > div[data-jc="search"]::-webkit-scrollbar-track {
+    background: transparent;
+    margin-right: 8px; /* Отступ для трека скроллбара */
+}
+
+#panel > div[data-jc="search"]::-webkit-scrollbar-thumb {
+    background-color: rgba(155, 155, 155, 0.5);
+    border-radius: 4px;
+    margin-right: 8px; /* Отступ для ползунка */
+}
+
+#panel > div[data-jc="search"]::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(155, 155, 155, 1);
+}
+
+/* Остальные стили остаются без изменений */
 .mainmenu { position: absolute; }
 .monospace { font-family: Menlo, Monaco, monospace;}
 
@@ -100,7 +148,6 @@ body { background-color: #f6f6f6; padding: 0; color: #777; font-smoothing: antia
 .chat-secret span { font-size: 10px; padding: 2px 5px; border-radius: 4px; background-color: #D63B32; color: white; }
 .chat-secret { margin-bottom: 5px; }
 
-.panel { height: 100%; float: left; width: 300px; overflow: hidden; transition: left 0.5s; }
 .panel .padding { padding: 5px 20px; }
 
 .panel nav a { display: block; padding: 1px 0 1px 20px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-right: 15px; border-radius: 0 4px 4px 0; margin-bottom: 2px; }
@@ -110,7 +157,6 @@ body { background-color: #f6f6f6; padding: 0; color: #777; font-smoothing: antia
 .panel nav .highlight { font-weight: bold; }
 .panel nav .fa-heart { opacity: 1; }
 .panel nav .fa-check-circle { opacity: 1; }
-/* .panel .caption { margin: 20px 0 5px 20px; } */
 
 .panel .user { color: white; padding: 20px 20px 5px; }
 .panel .user-name { font-size: 18px; font-weight: bold; }
@@ -133,6 +179,7 @@ body { background-color: #f6f6f6; padding: 0; color: #777; font-smoothing: antia
 .panel .search div { margin-left: 30px; padding: 0 10px; height: 22px; }
 .panel .search input { background: transparent; border: 0; padding: 0; margin: 0; font-family: 'Roboto'; font-size: 12px; outline: 0; width: 100%; color: black; }
 
+/* Остальные стили остаются без изменений */
 .theme-dark .panel { background: #303030 linear-gradient(-90deg,#303030,#252525); box-shadow: inset -10px 0 10px rgba(0,0,0,0.3), 5px 0 10px rgba(0,0,0,0.1); }
 .theme-dark .panel hr { border-color: #404040; }
 .theme-dark .panel nav a { color: gray; }
