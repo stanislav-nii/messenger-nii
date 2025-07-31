@@ -100,6 +100,17 @@ Tangular.register('markdown', function(value) {
 		return u ? ((text.substring(0, index) + '<a href="javascript:void(0)" class="b userlinker" data-linker="{2}">{1}</a>'.format(u.picture, Tangular.helpers.encode(u.name), u.linker)) + l) : text;
 	}).trim();
 
+	console.log(MARKDOWN.html);
+	MARKDOWN.html = MARKDOWN.html.replace(/href="\/download\/(.*?)"/g, (match) => {
+		return ' class="downloadable-file" ' + match;
+	});
+
+	MARKDOWN.html = MARKDOWN.html.replace(/<a (.*?)href="\/download\/(.*?)">(.*?)<\/a>/g, 
+function(match, attrs, fileId, fileName) {
+    const fileExt = fileName.split('.').pop().toLowerCase();
+    return `<a ${attrs} href="/download/${fileId}" class="downloadable-file" data-ext="${fileExt}" data-filename="${fileName}">${fileName}</a>`;
+});
+
 	xss.body = MARKDOWN.html;
 	MARKDOWN.html = marked_xss_inject(xss, this.user.sa);
 

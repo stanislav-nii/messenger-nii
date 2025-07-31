@@ -248,32 +248,37 @@ F.global.sendmessage = function (client, message) {
 		});
 
 		if (count > 0) {
-			message.unread = false;
-		}
+      message.unread = false;
+    }
 
-		if (is) {
-			tmp = F.global.users.findItem('id', client.threadid);
-			if (tmp && (!tmp.mute || !tmp.mute[iduser])) {
-				if (tmp.unread[iduser])
-					tmp.unread[iduser]++;
-				else
-					tmp.unread[iduser] = 1;
+    client.user.lastmessages[client.threadid] = message.id;
+    NOSQL('users').modify({ lastmessages: client.user.lastmessages }).where('id', client.user.id);
 
-				// Обновляем recent только при получении нового сообщения
-				tmp.recent[iduser] = F.datetime.getTime();
+    if (is) {
+      tmp = F.global.users.findItem("id", client.threadid);
+      if (tmp && (!tmp.mute || !tmp.mute[iduser])) {
+        // Обновляем lastmessages у получателя
+    	tmp.lastmessages[iduser] = message.id;
+        NOSQL('users').modify({ lastmessages: tmp.lastmessages }).where('id', tmp.id);
 
-				if (tmp.online) {
-					MSG_UNREAD.unread = tmp.unread;
-					MSG_UNREAD.recent = tmp.recent;
-					MSG_UNREAD.lastmessages = tmp.lastmessages;
-					if (self) {
-						tmp = self.find(n => n.user.id === tmp.id);
-						tmp && tmp.send(MSG_UNREAD);
-					}
-				}
-				OPERATION('users.save', NOOP);
-			}
-		}
+        if (tmp.unread[iduser]) tmp.unread[iduser]++;
+        else tmp.unread[iduser] = 1;
+
+        // Обновляем recent только при получении нового сообщения
+        tmp.recent[iduser] = F.datetime.getTime();
+
+        if (tmp.online) {
+          MSG_UNREAD.unread = tmp.unread;
+          MSG_UNREAD.recent = tmp.recent;
+          MSG_UNREAD.lastmessages = tmp.lastmessages;
+          if (self) {
+            tmp = self.find((n) => n.user.id === tmp.id);
+            tmp && tmp.send(MSG_UNREAD);
+          }
+        }
+        OPERATION("users.save", NOOP);
+      }
+    }
 
 		// Обновляем recent отправителя при отправке сообщения
 		if (iduser !== client.threadid) {
@@ -436,9 +441,17 @@ F.global.forward = function (client, message) {
 			message.unread = false;
 		}
 
+		// Обновляем lastmessages у отправителя
+		client.user.lastmessages[client.threadid] = message.id;
+    	NOSQL('users').modify({ lastmessages: client.user.lastmessages }).where('id', client.user.id);
+
 		if (is) {
 			tmp = F.global.users.findItem('id', client.threadid);
 			if (tmp && (!tmp.mute || !tmp.mute[iduser])) {
+
+				// Обновляем lastmessages у получателя
+            	tmp.lastmessages[iduser] = message.id;
+            	NOSQL('users').modify({ lastmessages: tmp.lastmessages }).where('id', tmp.id);
 
 				if (tmp.unread[iduser])
 					tmp.unread[iduser]++;

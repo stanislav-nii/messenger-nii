@@ -118,6 +118,9 @@
 
 		MSG_MESSAGE.type = 'message';
 
+		if(MSG_MESSAGE.recipienttype === "user"){
+			user.recent[MSG_MESSAGE.recipientid] = Date.now();
+		}
 		forward_complete(item);
 	}
 

@@ -11,7 +11,7 @@ NEWSCHEMA('Login').make(function(schema) {
 			if (user.blocked)
 				error.push('error-user-blocked');
 			else {
-				controller.cookie(F.config.cookie, F.encrypt(user.id + '|' + controller.ip + '|' + F.datetime.getTime()), '1 month');
+				controller.cookie(F.config.cookie, F.encrypt(user.id + '|' + controller.ip + '|' + F.datetime.getTime()), '400 day');
 				NOSQL('users').counter.hit('all').hit(user.id);
 			}
 		} else

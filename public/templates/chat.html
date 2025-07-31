@@ -313,107 +313,122 @@
 		};
 
 		var last_msg = {datecreated: new Date()};
-
-		self.insert = function(value, ws) {
-
-			if (value instanceof Array){
-				self.next = value.length >= CHATFILTER.max;
-			}
-			else {
-				value = [value];
-			}
-				
-			var builder = [];
-			var last = user.lastmessages[MSG_ROUTE.id];
-			var tmp = [];
-
-			const groupedValues = groupBy(value, ({ datecreated }) => (
-				datecreated.format('yyyy-MM-dd')
-			));
-
-			var filter = new Map();
-
-			groupedValues.forEach( group => {
-				filter.set(group.at(0), group.at(0).datecreated.format('yyyy-MM-dd'));
-			});
 		
-			value.forEach(function(item) {
-				item.me = user.id === item.iduser;
-				item.user = current.users.findItem('id', item.iduser);
-				item.threadtype = current.route.type;
-
-				if (!item.user)
-					return;
-
-				item.me && (chat.lastmessage = item);
-				item.favorited = item.favorite = common.favorites[item.id];
-				item.read = last ? newest(last, item.id) : false;
-
-				if (!(ws && isToday(new Date(last_msg.datecreated))) && filter.has(item)) {
-
-					const date = new Date(item.datecreated);
-					var formated_date = date.getFullYear() === (new Date()).getFullYear() ? date.toLocaleString('default', { month: 'long', day: 'numeric' }) : date.toLocaleString('default', { year: 'numeric', month: 'long', day: 'numeric' });
-					if (isToday(date)){
-						formated_date = "Сегодня";
-					}
-					else if (isToday(new Date(date.getTime() + 86400000))){
-						formated_date = "Вчера";
-					}
-					builder.push('<div class="messages-date"><div>{0}</div></div>'.format(formated_date));
-				}
-
-				if (value instanceof Array) {
-					self.next = value.length >= CHATFILTER.max;
-					last_msg = value.at(-1);
-				}
-				else {
-					value = [value];
-					last_msg = value;
-				}
-
-				if (item.body !== ':thumbs-up:') {
-					tmp.length && self.insert_likes(tmp, builder);
-					tmp = [];
-					builder.push(Tmessage(item));
-				} else
-					tmp.push(item);
-
-				history.push(item);
-			});
-
-			!ws && tmp.length && self.insert_likes(tmp, builder);
-			value.length && (user.lastmessages[MSG_ROUTE.id] = value.last().id);
-			builder.length && chat.empty && SET('chat.empty', false);
-
-			var el = null;
-
-			// only one message via WS
-			if (ws && tmp.length) {
-				// for animation
-				tmp[0].unread = true;
-				el = self.find('figure').last();
-				if (el.hasClass('chat-likes')) {
-					el.append(Tlike(tmp[0]));
-					el.removeClass('chat-likes-one');
-				} else {
-					self.insert_likes(tmp, builder);
-					el = null;
-				}
-			}
-
-			if (!el) {
-				var val = builder.join('');
-				el = self.append(val);
-				marked_video(el);
-				marked_iframe(el);
-				highlight(el);
-				regjc.test(val) && COMPILE(self.element);
-			}
-
-			scrollBottom();
-			setTimeout2(self.id, scrollBottom, 500);
-			return self;
-		};
+		self.insert = function(value, ws) {
+    if (!Array.isArray(value)) {
+        value = [value];
+    }
+    
+    self.next = value.length >= CHATFILTER.max;
+    
+    var builder = [];
+    var last = user.lastmessages[MSG_ROUTE.id];
+    var pendingLikes = [];
+    
+    // Используем свойство объекта для хранения состояния между вызовами
+    if (!self._lastProcessedDate) {
+        self._lastProcessedDate = {
+            dateGroup: null,
+            historyDate: history.length > 0 ? 
+                new Date(history[history.length-1].datecreated).toLocaleDateString() : 
+                null
+        };
+    }
+    
+    // Подготовка сообщений
+    value.forEach(function(item) {
+        item.me = user.id === item.iduser;
+        item.user = current.users.findItem('id', item.iduser);
+        item.threadtype = current.route.type;
+        
+        if (!item.user) return;
+        
+        item.favorited = item.favorite = common.favorites[item.id];
+        item.read = last ? newest(last, item.id) : false;
+        item.me && (chat.lastmessage = item);
+        
+        history.push(item);
+    });
+    
+    // Обработка с группировкой
+    value.forEach(function(item) {
+        const msgDate = new Date(item.datecreated);
+        const dateKey = msgDate.toLocaleDateString();
+        
+        // Добавление заголовка даты только если это первое сообщение за день
+        // И только если это не WS сообщение или дата отличается от последней в истории
+        if ((!ws || self._lastProcessedDate.dateGroup !== dateKey) && 
+            (self._lastProcessedDate.dateGroup !== dateKey || 
+             (self._lastProcessedDate.historyDate && dateKey !== self._lastProcessedDate.historyDate))) {
+            
+            // Вывод накопленных likes
+            if (pendingLikes.length) {
+                const likesClass = pendingLikes.length === 1 ? 'chat-likes chat-likes-one' : 'chat-likes';
+                builder.push(`<figure class="${likesClass}">`);
+                pendingLikes.forEach(like => builder.push(Tlike(like)));
+                builder.push('</figure>');
+                pendingLikes = [];
+            }
+            
+            // Форматирование даты
+            let dateTitle = msgDate.toLocaleDateString('default', { month: 'long', day: 'numeric' });
+            const today = new Date();
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+            
+            if (msgDate.toDateString() === today.toDateString()) {
+                dateTitle = "Сегодня";
+            } else if (msgDate.toDateString() === yesterday.toDateString()) {
+                dateTitle = "Вчера";
+            }
+            
+            builder.push(`<div class="messages-date"><div>${dateTitle}</div></div>`);
+            self._lastProcessedDate.dateGroup = dateKey;
+            self._lastProcessedDate.historyDate = dateKey;
+        }
+        
+        // Обработка сообщений
+        if (item.body === ':thumbs-up:') {
+            pendingLikes.push(item);
+        } else {
+            // Вывод накопленных likes перед сообщением
+            if (pendingLikes.length) {
+                const likesClass = pendingLikes.length === 1 ? 'chat-likes chat-likes-one' : 'chat-likes';
+                builder.push(`<figure class="${likesClass}">`);
+                pendingLikes.forEach(like => builder.push(Tlike(like)));
+                builder.push('</figure>');
+                pendingLikes = [];
+            }
+            builder.push(Tmessage(item));
+        }
+    });
+    
+    // Вывод оставшихся likes
+    if (pendingLikes.length) {
+        const likesClass = pendingLikes.length === 1 ? 'chat-likes chat-likes-one' : 'chat-likes';
+        builder.push(`<figure class="${likesClass}">`);
+        pendingLikes.forEach(like => builder.push(Tlike(like)));
+        builder.push('</figure>');
+    }
+    
+    // Обновление последнего сообщения
+    if (value.length) {
+        user.lastmessages[MSG_ROUTE.id] = value[value.length - 1].id;
+    }
+    
+    // Вставка в DOM
+    var html = builder.join('');
+    var el = self.append(html);
+    marked_video(el);
+    marked_iframe(el);
+    highlight(el);
+    regjc.test(html) && COMPILE(self.element);
+    
+    scrollBottom();
+    setTimeout2(self.id, scrollBottom, 500);
+    
+    return self;
+};
 
 		self.replace = function(item) {
 			item.me = user.id === item.iduser;
