@@ -1020,15 +1020,22 @@
 			url && url !== NAVIGATION.url && REDIRECT(url);
 		});
 
-		ON('clipboardimage', function (base64) {
-			//SETTER('loading', 'show');
-			AJAX('POST /api/upload/base64/', { file: base64 }, function (response, err) {
-				SETTER('loading', 'hide', 500);
-				//FIND('codemirror').codemirror().replaceSelection('![@(Screenshot from clipboard)](' + response.url + ')');
-				FIND('codemirror').codemirror().replaceSelection('![@(Screenshot from clipboard)](' + response.url + ')');
-				FIND('codemirror').enter(0);
+			ON('clipboardimage', function (base64) {
+				//SETTER('loading', 'show');
+				AJAX('POST /api/upload/base64/', { file: base64 }, function (response, err) {
+					SETTER('loading', 'hide', 500);
+					const now = new Date();
+					const dateStr = now.toISOString().slice(0, 10); // 2025-09-16
+					const timeStr = `${now.getHours().toString().padStart(2, '0')}${now.getMinutes().toString().padStart(2, '0')}${now.getSeconds().toString().padStart(2, '0')}`; // 114424
+
+					// Получаем расширение из response.url (последняя часть после точки)
+					const extension = response.url.split('.').pop();
+					const filename = `Снимок экрана ${dateStr} ${timeStr}.${extension}`;
+
+					FIND('codemirror').codemirror().replaceSelection(`![${filename}](${response.url})`);
+					FIND('codemirror').enter(0);
+				});
 			});
-		});
 
 		function refresh_online() {
 			var count = 0;

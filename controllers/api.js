@@ -225,50 +225,82 @@ function upload_base64() {
   var self = this;
 
   if (!self.body.file) {
-    self.json(null);
+    self.json({ error: "No file provided" });
     return;
   }
 
-  var type = self.body.file.base64ContentType();
-  var ext;
-
-  switch (type) {
-    case "image/png":
-      ext = ".png";
-      break;
-    case "image/jpg":
-      ext = ".jpg";
-      break;
-    case "image/jpeg":
-      ext = ".jpg";
-      break;
-    case "image/gif":
-      ext = ".gif";
-      break;
-    case "image/wepb":
-      ext = ".webp";
-      break;
-    case "image/svg":
-      ext = ".svg";
-      break;
-    case "image/bmp":
-      ext = ".bmp";
-      break;
-    case "image/x-icon":
-      ext = ".ico";
-      break;
-    default:
-      self.json(null);
-      return;
+  // Проверяем, является ли данные base64 строкой
+  if (typeof self.body.file !== 'string' || !self.body.file.includes('base64')) {
+    self.json({ error: "Invalid base64 data" });
+    return;
   }
 
-  var data = self.body.file.base64ToBuffer();
-  BASE64.filename = "clipboard" + ext;
-  BASE64.url =
-    "/download/" + NOSQL("files").binary.insert(BASE64.filename, data) + ext;
+  try {
+    // Извлекаем MIME type из base64 строки
+    const matches = self.body.file.match(/^data:([A-Za-z-+\/]+);base64,/);
+    if (!matches || matches.length !== 2) {
+      self.json({ error: "Invalid base64 format" });
+      return;
+    }
 
-  NOSQL("files").counter.hit("write");
-  self.json(BASE64);
+    const mimeType = matches[1];
+    let ext;
+    
+    switch (mimeType) {
+      case "image/png":
+        ext = ".png";
+        break;
+      case "image/jpeg":
+        ext = ".jpg";
+        break;
+      case "image/gif":
+        ext = ".gif";
+        break;
+      case "image/webp":
+        ext = ".webp";
+        break;
+      case "image/svg+xml":
+        ext = ".svg";
+        break;
+      case "image/bmp":
+        ext = ".bmp";
+        break;
+      case "image/x-icon":
+        ext = ".ico";
+        break;
+      default:
+        self.json({ error: "Unsupported image type: " + mimeType });
+        return;
+    }
+
+    // Удаляем префикс data URL
+    const base64Data = self.body.file.replace(/^data:image\/\w+;base64,/, '');
+    const data = Buffer.from(base64Data, 'base64');
+    
+    // Проверяем валидность изображения
+    if (!isValidImage(data)) {
+      self.json({ error: "Invalid image data" });
+      return;
+    }
+
+    const filename = "screenshot_" + Date.now() + ext;
+    const fileId = NOSQL("files").binary.insert(filename, data);
+    
+    const result = {
+      url: "/download/" + fileId + ext,
+      filename: filename,
+      type: "image",
+      checksum: getHash(data),
+      size: data.length
+    };
+
+    NOSQL("files").counter.hit("write");
+    self.json(result);
+
+  } catch (error) {
+    console.error("Error processing base64 upload:", error);
+    self.json({ error: "Server error processing image" });
+  }
 }
 
 function upload_photo() {
