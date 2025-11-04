@@ -193,12 +193,22 @@ F.global.sendmessage = function (client, message) {
 	var id = message.id;
 	var iduser = client.user.id;
 
+	const channel = F.global.channels.find(item => item.id === client.threadid);
+
 	message.id = id ? id : UID();
 	message.datecreated = F.datetime = new Date();
 	message.iduser = iduser;
 	message.mobile = client.req ? client.req.mobile : false;
 	message.robot = client.send ? false : true;
 	message.unread = true;
+	message.sender = client.user.name;
+	message.threadtype = client.threadtype;
+	message.linker = client.user.linker;
+	if(channel) {
+		message.threadname = channel.name;
+		message.linker = channel.linker;
+	}
+	
 
 	if (message.secret)
 		message.dateexpired = F.datetime.add('1 day');
@@ -270,6 +280,10 @@ F.global.sendmessage = function (client, message) {
         if (tmp.online) {
           MSG_UNREAD.unread = tmp.unread;
           MSG_UNREAD.recent = tmp.recent;
+		  MSG_UNREAD.body = message.body;
+		  MSG_UNREAD.sender = client.user.name;
+		  MSG_UNREAD.threadtype = client.threadtype;
+		  MSG_UNREAD.linker = client.user.linker
           MSG_UNREAD.lastmessages = tmp.lastmessages;
           if (self) {
             tmp = self.find((n) => n.user.id === tmp.id);
@@ -286,7 +300,8 @@ F.global.sendmessage = function (client, message) {
 			OPERATION('users.save', NOOP);
 		}
 
-
+		console.log("msg");
+		console.log(message);
 		client.send && client.send(message);
 
 	} else {
@@ -325,9 +340,18 @@ F.global.sendmessage = function (client, message) {
 
 		self && self.all(function (m) {
 			if (m.user.id !== iduser && m.threadid !== client.threadid && (!m.user.blacklist || !m.user.blacklist[client.threadid]) && (!m.user.mute || !m.user.mute[client.threadid]) && (!m.user.channels || m.user.channels[client.threadid]) && (!message.users || message.users[m.user.id])) {
+				
+				//const channel = F.global.channels.find(item => item.id === client.threadid);
+
 				MSG_UNREAD.unread = m.user.unread;
+				MSG_UNREAD.body = message.body;
+				MSG_UNREAD.sender = client.user.name;
+				MSG_UNREAD.threadtype = client.threadtype;
+				MSG_UNREAD.threadname = channel.name
+				MSG_UNREAD.linker = channel.linker
 				MSG_UNREAD.lastmessages = m.user.lastmessages;
 				MSG_UNREAD.recent = undefined;
+				//console.log(client);
 				m.send(MSG_UNREAD);
 			}
 		});
@@ -527,65 +551,6 @@ F.global.forward = function (client, message) {
 		});
 
 		OPERATION('users.save', NOOP);
-
-
-		// tmp = {};
-		// idchannel = client.threadid;
-
-
-		// var count = 0;
-		// self && self.send(message, function (id, m){
-
-		// 	// var CircularJSON = require('circular-json');
-		// 	// var str = CircularJSON.stringify(m);
-		// 	// console.log(str);
-
-		// 	// if (m === client)
-		// 	// 	return true;
-
-		// 	if (m.threadid === client.threadid && (!message.users || message.users[m.user.id])) {
-		// 		++count;
-		// 	}
-		// 	if (m.threadid === client.threadid && (!message.users || message.users[m.user.id])) {
-		// 				console.log("sdfsdfdsfsd");
-		// 				tmp[m.user.id] = true;
-		// 				m.user.lastmessages[m.threadid] = message.id;
-		// 				return true;
-		// 	}
-		// });
-
-		// // Notify users in this channel
-		// // self && self.send(message, function(id, m) {
-		// // 	//count < 2 ? message.unread = true: message.unread = false;
-		// // 	if (m.threadid === client.threadid && (!message.users || message.users[m.user.id])) {
-		// // 		console.log("sdfsdfdsfsd");
-		// // 		tmp[m.user.id] = true;
-		// // 		m.user.lastmessages[m.threadid] = message.id;
-		// // 		return true;
-		// // 	}
-		// // });
-
-		// // Set "unread" for users outside of this channel
-		// for (var i = 0, length = F.global.users.length; i < length; i++) {
-		// 	var user = F.global.users[i];
-		// 	if (!tmp[user.id] && (!user.blacklist || !user.blacklist[idchannel]) && (!user.mute || !user.mute[idchannel]) && (!user.channels || user.channels[idchannel]) && (!message.users || message.users[user.id])) {
-		// 		if (user.unread[idchannel])
-		// 			user.unread[idchannel]++;
-		// 		else
-		// 			user.unread[idchannel] = 1;
-		// 	}
-		// }
-
-		// // self && self.all(function(m) {
-		// // 	if (m.user.id !== iduser && m.threadid !== client.threadid && (!m.user.blacklist || !m.user.blacklist[client.threadid]) && (!m.user.mute || !m.user.mute[client.threadid]) && (!m.user.channels || m.user.channels[client.threadid]) && (!message.users || message.users[m.user.id])) {
-		// // 		MSG_UNREAD.unread = m.user.unread;
-		// // 		MSG_UNREAD.lastmessages = m.user.lastmessages;
-		// // 		MSG_UNREAD.recent = undefined;
-		// // 		m.send(MSG_UNREAD);
-		// // 	}
-		// // });
-
-		// OPERATION('users.save', NOOP);
 	}
 
 	// Saves message into the DB
