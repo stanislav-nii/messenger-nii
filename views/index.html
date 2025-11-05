@@ -426,7 +426,7 @@
 				messageElement.getElementsByClassName("chat-body")[0].style.opacity = '0.5';
 				check = false;
 
-				if (messageElement.classList.contains("me")) {
+				if (messageElement.classList.contains("me") || user.sa) {
 					contextMenu.getElementsByClassName("delete")[0].classList.remove("hidden");
 				}
 				else {
